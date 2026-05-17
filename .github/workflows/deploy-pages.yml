@@ -1,0 +1,77 @@
+# Deploy the bootcamp site to GitHub Pages on every push to main.
+#
+# Why GitHub Actions instead of "Deploy from a branch"?
+# - Faster builds (5-10s vs 30-60s)
+# - Better error messages when something breaks
+# - Lets us add steps later (e.g., minifying HTML, validating links)
+#
+# This workflow:
+#   1. Checks out the repo on every push to main
+#   2. Builds the Jekyll site (so READMEs render nicely)
+#   3. Uploads the result as a Pages artifact
+#   4. Deploys to https://cloudwithshad.github.io/cloudwithshad-bootcamp-may2026/
+
+name: Deploy bootcamp site to GitHub Pages
+
+on:
+  # Run on every push to main
+  push:
+    branches: [main]
+
+  # Also let us trigger it manually from the Actions tab (e.g., for retries)
+  workflow_dispatch:
+
+# Pages deployments need these permissions
+permissions:
+  contents: read       # to clone the repo
+  pages: write         # to publish the site
+  id-token: write      # for the deployment URL
+
+# Don't run two deployments at the same time (one will cancel the other)
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # ────────────────────────────────────────
+  # Build the site
+  # ────────────────────────────────────────
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby (for Jekyll)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build with Jekyll
+        # Outputs the built site to ./_site
+        run: |
+          bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+
+  # ────────────────────────────────────────
+  # Deploy the built site
+  # ────────────────────────────────────────
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

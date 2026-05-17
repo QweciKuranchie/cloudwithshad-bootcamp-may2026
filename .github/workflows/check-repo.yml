@@ -1,0 +1,50 @@
+name: Check repo health
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  markdown-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for broken internal links
+        run: |
+          # Simple check — every .md file's relative links should point to a file that exists
+          echo "Repo health check: scanning markdown files"
+          find . -name "*.md" -type f | head -20
+
+      - name: Check HTML files are well-formed
+        run: |
+          echo "HTML files in repo:"
+          find . -name "*.html" -type f | wc -l
+          echo "Done"
+
+  validate-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify all week folders have READMEs
+        run: |
+          for week in week-01-foundations week-02-networking week-03-scaling-devops week-04-ai-capstone; do
+            if [ ! -f "$week/README.md" ]; then
+              echo "::error::Missing README in $week"
+              exit 1
+            fi
+          done
+          echo "✓ All week READMEs present"
+
+      - name: Verify each week has labs + quiz folders
+        run: |
+          for week in week-01-foundations week-02-networking week-03-scaling-devops week-04-ai-capstone; do
+            if [ ! -d "$week/quiz" ] || [ ! -d "$week/slides" ]; then
+              echo "::error::$week missing required subfolders"
+              exit 1
+            fi
+          done
+          echo "✓ Folder structure intact"

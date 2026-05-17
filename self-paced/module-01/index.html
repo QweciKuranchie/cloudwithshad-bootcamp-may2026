@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 — Coming Soon | cloudwithshad Self-Paced</title>
+<meta name="description" content="This self-paced module is coming soon. Subscribe to be notified when it lands.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy:    #0A1628;
+    --navy-2:  #13243A;
+    --navy-3:  #1A2F4A;
+    --cyan:    #00B4D8;
+    --gold:    #F4B942;
+    --green:   #2EA043;
+    --white:   #FFFFFF;
+    --gray:    #94A3B8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  nav.topbar {
+    background: rgba(10,22,40,0.92);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .brand { font-size: 17px; font-weight: 500; color: var(--white); text-decoration: none; }
+  .brand span { font-weight: 800; color: var(--cyan); }
+  .nav-back {
+    color: var(--gray); text-decoration: none; font-size: 13px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--cyan); }
+
+  main {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 80px 24px 80px;
+    text-align: center;
+  }
+  @media (max-width: 720px) { main { padding: 56px 20px 60px; } }
+
+  .breadcrumbs {
+    font-size: 12px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+  }
+  .breadcrumbs a { color: var(--gray); text-decoration: none; }
+  .breadcrumbs a:hover { color: var(--cyan); }
+  .breadcrumbs .sep { margin: 0 8px; opacity: 0.5; }
+
+  .big-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 180px;
+    font-weight: 800;
+    line-height: 1;
+    color: rgba(0,180,216,0.18);
+    margin-bottom: 4px;
+  }
+  @media (max-width: 720px) { .big-number { font-size: 120px; } }
+
+  .lock-icon {
+    font-size: 56px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    color: var(--white);
+  }
+  @media (max-width: 720px) { h1 { font-size: 32px; } }
+
+  h1 .accent { color: var(--gold); }
+
+  .sub {
+    font-size: 18px;
+    color: var(--gray);
+    margin: 0 auto 36px;
+    max-width: 520px;
+  }
+
+  .formats-preview {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .format-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: #CBD5E1;
+  }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--cyan); color: var(--navy); }
+  .btn-primary:hover { background: #00C8F0; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,180,216,0.35); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: var(--cyan);
+  }
+
+  .help {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="nav-inner">
+    <a href="../../index.html" class="brand">cloud<span>withshad</span></a>
+    <a href="../index.html" class="nav-back">← Self-Paced Library</a>
+  </div>
+</nav>
+
+<main>
+  <div class="breadcrumbs">
+    <a href="../../index.html">Home</a>
+    <span class="sep">/</span>
+    <a href="../index.html">Self-Paced</a>
+    <span class="sep">/</span>
+    <span>Module 01</span>
+  </div>
+
+  <div class="big-number">01</div>
+  <div class="lock-icon">🔒</div>
+
+  <h1>This module is <span class="accent">coming soon.</span></h1>
+
+  <p class="sub">Shadrack is still building this one. When it's ready, you'll find it here in all three formats — watch, listen, or read.</p>
+
+  <div class="formats-preview">
+    <span class="format-badge">📺 Watch on YouTube</span>
+    <span class="format-badge">🎧 Listen as a podcast</span>
+    <span class="format-badge">📄 Read the PDF</span>
+  </div>
+
+  <div class="actions">
+    <a href="../index.html" class="btn btn-primary">← Back to library</a>
+    <a href="https://github.com/cloudwithshad/cloudwithshad-bootcamp-may2026" target="_blank" rel="noopener" class="btn btn-secondary">
+      🔔 Watch the repo for updates
+    </a>
+  </div>
+
+  <p class="help">When you "Watch → Releases" on GitHub, you'll get an email the moment any new module drops.</p>
+</main>
+
+</body>
+</html>

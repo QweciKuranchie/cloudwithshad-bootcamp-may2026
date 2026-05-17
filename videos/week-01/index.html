@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 — Live Session Recording | cloudwithshad Bootcamp</title>
+<meta name="description" content="Watch the recording of the Week 1 live session: Cloud Foundations — S3, EC2, IAM basics.">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Week 1 — Cloud Foundations | cloudwithshad Live Session">
+<meta property="og:description" content="2-hour live walkthrough of cloud foundations — S3, EC2, IAM, and your first AWS deploy.">
+<meta property="og:type" content="video.other">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy:    #0A1628;
+    --navy-2:  #13243A;
+    --navy-3:  #1A2F4A;
+    --cyan:    #00B4D8;
+    --gold:    #F4B942;
+    --green:   #2EA043;
+    --red:     #FF4444;
+    --white:   #FFFFFF;
+    --gray:    #94A3B8;
+    --gray-2:  #64748B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ═══════════════════ NAV ═══════════════════ */
+  nav.topbar {
+    background: rgba(10,22,40,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .brand { font-size: 17px; font-weight: 500; color: var(--white); text-decoration: none; }
+  .brand span { font-weight: 800; color: var(--cyan); }
+  .nav-back {
+    color: var(--gray); text-decoration: none; font-size: 13px;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--cyan); }
+
+  /* ═══════════════════ MAIN ═══════════════════ */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  @media (max-width: 720px) {
+    main { padding: 24px 16px 60px; }
+  }
+
+  /* ═══════════════════ HERO META ═══════════════════ */
+  .video-meta {
+    margin-bottom: 24px;
+  }
+  .breadcrumbs {
+    font-size: 12px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .breadcrumbs a {
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .breadcrumbs a:hover { color: var(--cyan); }
+  .breadcrumbs .sep { margin: 0 8px; opacity: 0.5; }
+  h1.video-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    color: var(--white);
+  }
+  @media (max-width: 720px) { h1.video-title { font-size: 28px; } }
+  .video-subtitle {
+    font-size: 18px;
+    color: var(--cyan);
+    margin-bottom: 16px;
+  }
+  .video-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    color: #CBD5E1;
+  }
+  .pill.live { background: rgba(46,160,67,0.12); border-color: var(--green); color: var(--green); }
+  .pill.date { color: var(--gold); border-color: rgba(244,185,66,0.3); }
+
+  /* ═══════════════════ VIDEO PLAYER ═══════════════════ */
+  .video-wrapper {
+    position: relative;
+    width: 100%;
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  }
+  .video-aspect {
+    position: relative;
+    padding-bottom: 56.25%;  /* 16:9 ratio */
+    height: 0;
+    overflow: hidden;
+  }
+  .video-aspect iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: 0;
+  }
+
+  /* ═══════════════════ ACTIONS ═══════════════════ */
+  .video-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-youtube {
+    background: #FF0000;
+    color: white;
+  }
+  .btn-youtube:hover { background: #CC0000; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: var(--cyan);
+  }
+
+  /* ═══════════════════ CONTENT GRID ═══════════════════ */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 900px) {
+    .content-grid { grid-template-columns: 1fr; }
+  }
+
+  .content-main { min-width: 0; }
+  .content-sidebar { min-width: 0; }
+
+  /* ═══════════════════ SECTIONS ═══════════════════ */
+  .section {
+    background: linear-gradient(135deg, var(--navy-2), var(--navy-3));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 26px 28px;
+    margin-bottom: 22px;
+  }
+  .section h2 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  /* Chapters list */
+  .chapters {
+    list-style: none;
+    padding: 0;
+  }
+  .chapters li {
+    padding: 12px 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .chapters li:first-child { border-top: none; padding-top: 0; }
+  .chapter-time {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--cyan);
+    flex-shrink: 0;
+    width: 56px;
+    padding-top: 2px;
+    cursor: pointer;
+  }
+  .chapter-time:hover { color: var(--gold); }
+  .chapter-text {
+    flex: 1;
+    font-size: 14px;
+    color: #CBD5E1;
+  }
+
+  /* Resources list */
+  .resources {
+    list-style: none;
+    padding: 0;
+  }
+  .resources li {
+    margin-bottom: 10px;
+  }
+  .resources a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    color: #CBD5E1;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .resources a:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    transform: translateX(2px);
+  }
+  .resources .ico { font-size: 16px; }
+
+  /* Description paragraph */
+  .description {
+    color: #CBD5E1;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .description p { margin-bottom: 12px; }
+  .description p:last-child { margin-bottom: 0; }
+
+  /* Speaker card */
+  .speaker {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+  }
+  .speaker-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--cyan), var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    flex-shrink: 0;
+  }
+  .speaker-info .name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .speaker-info .role {
+    font-size: 12px;
+    color: var(--gray);
+  }
+
+  /* Fallback notice */
+  .fallback {
+    background: rgba(244,185,66,0.08);
+    border: 1px solid rgba(244,185,66,0.25);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    color: var(--gold);
+    display: none;  /* Show only if video fails */
+  }
+
+  /* ═══════════════════ FOOTER NAV ═══════════════════ */
+  .footer-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-nav a {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+  .footer-nav a:hover { color: var(--cyan); }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="nav-inner">
+    <a href="../../index.html" class="brand">cloud<span>withshad</span></a>
+    <a href="../../index.html#weeks" class="nav-back">← Back to curriculum</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- Video meta -->
+  <div class="video-meta">
+    <div class="breadcrumbs">
+      <a href="../../index.html">Home</a>
+      <span class="sep">/</span>
+      <a href="../../index.html#weeks">Curriculum</a>
+      <span class="sep">/</span>
+      <a href="../index.html">Live Recordings</a>
+      <span class="sep">/</span>
+      <span>Week 1</span>
+    </div>
+
+    <h1 class="video-title">Week 1 — Cloud Foundations</h1>
+    <div class="video-subtitle">Live session · S3 · EC2 · IAM basics</div>
+
+    <div class="video-pills">
+      <span class="pill live">🟢 LIVE SESSION</span>
+      <span class="pill date">📅 Saturday 23 May 2026</span>
+      <span class="pill">⏱️ 2h 04m</span>
+      <span class="pill">🎯 Week 1 of 4</span>
+    </div>
+  </div>
+
+  <!-- Fallback notice (hidden by default, shown if video fails) -->
+  <div class="fallback" id="fallbackNotice">
+    ⚠️ Having trouble loading the video? <a href="https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE" style="color:var(--gold);text-decoration:underline">Watch directly on YouTube →</a>
+  </div>
+
+  <!-- YouTube embed -->
+  <div class="video-wrapper">
+    <div class="video-aspect">
+      <iframe
+        id="ytPlayer"
+        src="https://www.youtube-nocookie.com/embed/YOUTUBE_VIDEO_ID_HERE?rel=0&modestbranding=1"
+        title="Week 1 — Cloud Foundations · cloudwithshad Bootcamp"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="video-actions">
+    <a href="https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE" target="_blank" rel="noopener" class="btn btn-youtube">
+      ▶ Open in YouTube
+    </a>
+    <a href="../../week-01-foundations/" class="btn btn-secondary">
+      📂 Week 1 materials
+    </a>
+    <button onclick="navigator.clipboard.writeText(window.location.href); this.textContent='✓ Link copied!'; setTimeout(()=>this.textContent='🔗 Share this recording',2500)" class="btn btn-secondary">
+      🔗 Share this recording
+    </button>
+  </div>
+
+  <!-- Content grid -->
+  <div class="content-grid">
+
+    <!-- LEFT: Description + chapters -->
+    <div class="content-main">
+
+      <!-- About the session -->
+      <div class="section">
+        <h2>About this session</h2>
+        <div class="description">
+          <p>This is the live walkthrough from Saturday 23 May 2026 — the first session of the cohort. In two hours we covered everything you need to start building on AWS: how the cloud actually works, the three services that matter most on day one (S3, EC2, IAM), and a live demo where I deployed a portfolio site to S3 with CloudFront in front of it.</p>
+          <p>Watch this <strong>before</strong> starting Labs 1 and 2 — the labs will make significantly more sense after you've seen the live walkthrough.</p>
+        </div>
+      </div>
+
+      <!-- Chapter markers -->
+      <div class="section">
+        <h2>Chapters</h2>
+        <ul class="chapters">
+          <li>
+            <span class="chapter-time" onclick="jumpTo(0)">00:00</span>
+            <div class="chapter-text"><strong>Welcome + introductions.</strong> Quick round of who's here from where.</div>
+          </li>
+          <li>
+            <span class="chapter-time" onclick="jumpTo(245)">04:05</span>
+            <div class="chapter-text"><strong>What is cloud computing, really?</strong> On-prem vs cloud through the chop bar analogy.</div>
+          </li>
+          <li>
+            <span class="chapter-time" onclick="jumpTo(890)">14:50</span>
+            <div class="chapter-text"><strong>AWS in one slide.</strong> The 6 service categories and what they're for.</div>
+          </li>
+          <li>
+            <span class="chapter-time" onclick="jumpTo(1525)">25:25</span>
+            <div class="chapter-text"><strong>S3 deep-dive.</strong> Buckets, objects, versioning. Live demo: create a bucket.</div>
+          </li>
+          <li>
+            <span class="chapter-time" onclick="jumpTo(2680)">44:40</span>
+            <div class="chapter-text"><strong>EC2 deep-dive.</strong> What a "virtual machine" really is. Live launch of t2.micro.</div>
+          </li>
+          <li>
+            <span class="chapter-time" onclick="jumpTo(3955)">1:05:55</span>
+            <div class="chapter-text"><strong>IAM basics.</strong> Users vs roles vs policies. Why no one should use the root account.</div>
+          </li>
+          <li>
+            <span class="chapter-time" onclick="jumpTo(5210)">1:26:50</span>
+            <div class="chapter-text"><strong>Regions, AZs, edge locations.</strong> Why Frankfurt? Why not us-east-1?</div>
+          </li>
+          <li>
+            <span class="chapter-time" onclick="jumpTo(6195)">1:43:15</span>
+            <div class="chapter-text"><strong>Pricing & free tier.</strong> The four services you should never touch beyond free tier.</div>
+          </li>
+          <li>
+            <span class="chapter-time" onclick="jumpTo(6720)">1:52:00</span>
+            <div class="chapter-text"><strong>Q&A.</strong> Cohort questions answered.</div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Sidebar -->
+    <div class="content-sidebar">
+
+      <!-- Speaker -->
+      <div class="section">
+        <h2>Speaker</h2>
+        <div class="speaker">
+          <div class="speaker-avatar">SD</div>
+          <div class="speaker-info">
+            <div class="name">Shadrack Darku</div>
+            <div class="role">6× AWS Certified · GenAI Developer</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related resources -->
+      <div class="section">
+        <h2>This week's resources</h2>
+        <ul class="resources">
+          <li>
+            <a href="../../week-01-foundations/slides/Week1_CloudWithShad.pptx">
+              <span class="ico">🎬</span><span>Week 1 Slides (.pptx)</span>
+            </a>
+          </li>
+          <li>
+            <a href="../../week-01-foundations/lab-1-s3-portfolio/Week1_Lab1_S3_Portfolio.html">
+              <span class="ico">🛠️</span><span>Lab 1 — S3 Portfolio</span>
+            </a>
+          </li>
+          <li>
+            <a href="../../week-01-foundations/lab-2-ec2-webapp/Week1_Lab2_EC2_App.html">
+              <span class="ico">🛠️</span><span>Lab 2 — EC2 Web Server</span>
+            </a>
+          </li>
+          <li>
+            <a href="../../week-01-foundations/quiz/Week1_Lab3D_Quiz_Everything.html">
+              <span class="ico">🎯</span><span>Week 1 Quiz</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Up next -->
+      <div class="section">
+        <h2>Up next</h2>
+        <ul class="resources">
+          <li>
+            <a href="../week-02/index.html">
+              <span class="ico">📺</span><span>Week 2 — Networking &amp; Architectures</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer navigation between weeks -->
+  <div class="footer-nav">
+    <a href="../index.html">← All recordings</a>
+    <a href="../week-02/index.html">Week 2 recording →</a>
+  </div>
+
+</main>
+
+<script>
+  // Jump to a specific timestamp in the YouTube player
+  function jumpTo(seconds) {
+    const player = document.getElementById('ytPlayer');
+    // Reload the iframe with ?start={seconds}&autoplay=1
+    // This works for the standard embed without needing the YouTube IFrame API
+    const currentSrc = player.src;
+    const baseSrc = currentSrc.split('?')[0];
+    player.src = `${baseSrc}?rel=0&modestbranding=1&autoplay=1&start=${seconds}`;
+    // Scroll the player into view on mobile
+    player.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Show fallback notice if iframe fails to load (rare but defensive)
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const iframe = document.getElementById('ytPlayer');
+      try {
+        // If we can't access iframe content after 3s, assume YouTube is blocked
+        if (!iframe.contentWindow) {
+          document.getElementById('fallbackNotice').style.display = 'block';
+        }
+      } catch (e) {
+        // CORS error is normal — YouTube embed works fine
+      }
+    }, 3000);
+  });
+</script>
+
+</body>
+</html>

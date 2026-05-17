@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Session Recordings | cloudwithshad Bootcamp</title>
+<meta name="description" content="All live session recordings from the cloudwithshad May 2026 cohort. Saturday afternoons, two hours, walked through everything.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy:    #0A1628;
+    --navy-2:  #13243A;
+    --navy-3:  #1A2F4A;
+    --cyan:    #00B4D8;
+    --gold:    #F4B942;
+    --green:   #2EA043;
+    --white:   #FFFFFF;
+    --gray:    #94A3B8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  nav.topbar {
+    background: rgba(10,22,40,0.92);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .brand { font-size: 17px; font-weight: 500; color: var(--white); text-decoration: none; }
+  .brand span { font-weight: 800; color: var(--cyan); }
+  .nav-back {
+    color: var(--gray); text-decoration: none; font-size: 13px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--cyan); }
+
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 24px 80px;
+  }
+
+  .hero {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .hero-kicker {
+    display: inline-block;
+    background: rgba(255,68,68,0.12);
+    border: 1px solid #FF4444;
+    color: #FF6B6B;
+    padding: 5px 14px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 12px;
+    color: var(--white);
+  }
+  .hero h1 .accent { color: var(--gold); }
+  @media (max-width: 720px) { .hero h1 { font-size: 36px; } }
+  .hero p {
+    font-size: 18px;
+    color: var(--gray);
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  /* Recording grid */
+  .recordings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 22px;
+  }
+  .rec-card {
+    background: linear-gradient(135deg, var(--navy-2), var(--navy-3));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--white);
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+  .rec-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0,180,216,0.4);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+  }
+  .rec-card.coming-soon {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .rec-card.coming-soon:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Thumbnail */
+  .rec-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, rgba(0,180,216,0.15), rgba(244,185,66,0.1));
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .rec-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .rec-thumb .play-icon {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px; height: 60px;
+    background: rgba(0,0,0,0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: white;
+    transition: all 0.2s;
+  }
+  .rec-card:hover .play-icon {
+    background: var(--cyan);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  .rec-thumb .duration {
+    position: absolute;
+    bottom: 8px; right: 8px;
+    background: rgba(0,0,0,0.85);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .rec-thumb .week-badge {
+    position: absolute;
+    top: 10px; left: 10px;
+    background: rgba(0,0,0,0.7);
+    color: var(--cyan);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  /* Coming soon overlay */
+  .coming-soon-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10,22,40,0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  /* Body */
+  .rec-body {
+    padding: 20px 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .rec-body h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .rec-body .theme {
+    font-size: 13px;
+    color: var(--cyan);
+    margin-bottom: 12px;
+  }
+  .rec-body p {
+    font-size: 13px;
+    color: #CBD5E1;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    flex: 1;
+  }
+  .rec-meta {
+    font-size: 11px;
+    color: var(--gray);
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .rec-meta .date strong { color: var(--gold); }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    background: linear-gradient(135deg, var(--navy-2), var(--navy-3));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    grid-column: 1 / -1;
+  }
+  .empty-state .ico {
+    font-size: 48px;
+    margin-bottom: 14px;
+  }
+  .empty-state h3 {
+    color: var(--gold);
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .empty-state p {
+    color: var(--gray);
+    font-size: 14px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* Subscribe block */
+  .subscribe {
+    background: linear-gradient(135deg, rgba(0,180,216,0.08), rgba(244,185,66,0.08));
+    border: 1px solid rgba(0,180,216,0.25);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-top: 50px;
+    text-align: center;
+  }
+  .subscribe h3 {
+    font-size: 18px;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+  .subscribe p {
+    font-size: 14px;
+    color: #CBD5E1;
+    margin-bottom: 18px;
+  }
+  .subscribe .btn {
+    display: inline-block;
+    background: #FF0000;
+    color: white;
+    padding: 11px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .subscribe .btn:hover {
+    background: #CC0000;
+    transform: translateY(-1px);
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="brand">cloud<span>withshad</span></a>
+    <a href="../index.html" class="nav-back">← Back to home</a>
+  </div>
+</nav>
+
+<main>
+
+  <div class="hero">
+    <div class="hero-kicker">📺 LIVE SESSION RECORDINGS</div>
+    <h1>Watch every <span class="accent">Saturday session</span></h1>
+    <p>Two hours per week, walked through everything. Missed one? Watch it back. Want to revisit a concept? Use the chapter markers.</p>
+  </div>
+
+  <div class="recordings-grid">
+
+    <!-- Week 1 -->
+    <a href="week-01/index.html" class="rec-card" data-week-date="2026-05-23">
+      <div class="rec-thumb">
+        <span class="week-badge">WEEK 1</span>
+        <div class="play-icon">▶</div>
+        <span class="duration">2h 04m</span>
+        <div class="coming-soon-overlay" data-show-if-future>
+          🔒 Records Sat 23 May
+        </div>
+      </div>
+      <div class="rec-body">
+        <h3>Cloud Foundations</h3>
+        <div class="theme">S3 · EC2 · IAM basics</div>
+        <p>The first session. Cloud explained without jargon. Live walkthrough of S3, EC2, and the IAM model that protects them.</p>
+        <div class="rec-meta">
+          <span class="date">📅 <strong>Sat 23 May 2026</strong></span>
+          <span>3 PM GMT</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Week 2 -->
+    <a href="week-02/index.html" class="rec-card coming-soon" data-week-date="2026-05-30">
+      <div class="rec-thumb">
+        <span class="week-badge">WEEK 2</span>
+        <div class="play-icon">▶</div>
+        <span class="duration">~2h</span>
+        <div class="coming-soon-overlay">
+          🔒 Records Sat 30 May
+        </div>
+      </div>
+      <div class="rec-body">
+        <h3>Networking &amp; Architectures</h3>
+        <div class="theme">VPC · RDS · Lambda</div>
+        <p>How real apps are wired together. VPCs, public/private subnets, databases, and serverless functions.</p>
+        <div class="rec-meta">
+          <span class="date">📅 <strong>Sat 30 May 2026</strong></span>
+          <span>3 PM GMT</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Week 3 -->
+    <a href="week-03/index.html" class="rec-card coming-soon" data-week-date="2026-06-06">
+      <div class="rec-thumb">
+        <span class="week-badge">WEEK 3</span>
+        <div class="play-icon">▶</div>
+        <span class="duration">~2h</span>
+        <div class="coming-soon-overlay">
+          🔒 Records Sat 6 Jun
+        </div>
+      </div>
+      <div class="rec-body">
+        <h3>Scaling &amp; DevOps</h3>
+        <div class="theme">Auto Scaling · ALB · CI/CD</div>
+        <p>What happens when your app gets popular. Auto-scaling, load balancers, and how to deploy automatically from GitHub.</p>
+        <div class="rec-meta">
+          <span class="date">📅 <strong>Sat 6 Jun 2026</strong></span>
+          <span>3 PM GMT</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Week 4 -->
+    <a href="week-04/index.html" class="rec-card coming-soon" data-week-date="2026-06-13" style="border-color: rgba(244,185,66,0.25);">
+      <div class="rec-thumb" style="background: linear-gradient(135deg, rgba(244,185,66,0.2), rgba(0,180,216,0.1));">
+        <span class="week-badge" style="color: var(--gold);">WEEK 4 · 🏆</span>
+        <div class="play-icon">▶</div>
+        <span class="duration">~2h</span>
+        <div class="coming-soon-overlay">
+          🔒 Records Sat 13 Jun
+        </div>
+      </div>
+      <div class="rec-body">
+        <h3>AI Services &amp; Capstone</h3>
+        <div class="theme" style="color: var(--gold);">Textract · Comprehend · Capstone</div>
+        <p>The finale. AWS AI services chained together — Textract, Comprehend, Rekognition. Then the capstone walkthrough.</p>
+        <div class="rec-meta">
+          <span class="date">📅 <strong>Sat 13 Jun 2026</strong></span>
+          <span>3 PM GMT</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Demo Day -->
+    <a href="demo-day/index.html" class="rec-card coming-soon" data-week-date="2026-06-20" style="border-color: rgba(244,185,66,0.3); grid-column: span 2;">
+      <div class="rec-thumb" style="background: linear-gradient(135deg, rgba(244,185,66,0.3), rgba(0,180,216,0.15));">
+        <span class="week-badge" style="color: var(--gold);">🎬 DEMO DAY</span>
+        <div class="play-icon">▶</div>
+        <span class="duration">~3h</span>
+        <div class="coming-soon-overlay">
+          🔒 Records Sat 20 Jun
+        </div>
+      </div>
+      <div class="rec-body">
+        <h3>Demo Day — Group Project Showcases</h3>
+        <div class="theme" style="color: var(--gold);">All teams · 5 mini-awards · The finale</div>
+        <p>Every team demos their group project live. 5 mini-awards: Most Polished, Most Innovative, Best Demo, Best Documentation, People's Choice. The proudest day of the cohort.</p>
+        <div class="rec-meta">
+          <span class="date">📅 <strong>Sat 20 Jun 2026</strong></span>
+          <span>3 PM GMT</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Subscribe to YouTube channel -->
+  <div class="subscribe">
+    <h3>📺 Get notified when new recordings drop</h3>
+    <p>Subscribe to the cloudwithshad YouTube channel — every Saturday session goes there minutes after we finish, plus bonus content.</p>
+    <a href="https://www.youtube.com/@cloudwithshad" target="_blank" rel="noopener" class="btn">
+      ▶ Subscribe on YouTube
+    </a>
+  </div>
+
+</main>
+
+<script>
+  // Auto-update card states based on date
+  (function() {
+    const now = new Date();
+    document.querySelectorAll('.rec-card').forEach(card => {
+      const weekDate = card.dataset.weekDate;
+      if (!weekDate) return;
+      const date = new Date(weekDate);
+      // If the session date has passed, remove coming-soon
+      if (date < now) {
+        card.classList.remove('coming-soon');
+        const overlay = card.querySelector('.coming-soon-overlay');
+        if (overlay) overlay.style.display = 'none';
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

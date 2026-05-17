@@ -1,0 +1,76 @@
+# AWS credentials — NEVER commit these
+.aws/
+credentials
+*.pem
+*.ppk
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Node
+node_modules/
+package-lock.json
+yarn.lock
+.npm
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# VS Code (keep .vscode shared settings out of personal preferences)
+.vscode/
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDEs
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary build files
+build/
+dist/
+*.egg-info/
+*.log
+
+# Local test files
+test-uploads/
+local-test/
+*.local.*
+
+# Personal student work (each student keeps their solutions in their own fork's branch)
+my-solutions/
+*_personal/
+
+# LibreOffice/Office lock files
+.~lock*
+~$*
+
+# OS-specific noise
+Icon?
+.Spotlight-V100
+.Trashes
+ehthumbs.db

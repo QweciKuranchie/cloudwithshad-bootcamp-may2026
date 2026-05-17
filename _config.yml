@@ -1,0 +1,42 @@
+# GitHub Pages / Jekyll configuration for cloudwithshad bootcamp.
+#
+# This file tells GitHub Pages how to build the site when it serves the repo.
+# Even though we have a custom index.html, Jekyll runs by default and helps
+# turn the lab README.md files into rendered HTML pages.
+
+title: "cloudwithshad Bootcamp"
+description: "Free 4-week AWS Cloud Practitioner bootcamp for West Africa"
+url: "https://cloudwithshad.github.io"
+baseurl: "/cloudwithshad-bootcamp-may2026"
+
+# Use the minima theme as a fallback for markdown files. The root index.html
+# overrides it for the landing page (Jekyll serves HTML files as-is).
+theme: minima
+
+markdown: kramdown
+highlighter: rouge
+
+# Files Jekyll should NOT include in the built site
+exclude:
+  - scripts/
+  - "*.zip"
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - README.md                # the repo README is for GitHub, not the website
+                             # (index.html is what visitors see)
+
+# Plugin: makes relative markdown links work between folders
+plugins:
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: true
+
+# All markdown pages use the simple page layout from minima
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "page"
