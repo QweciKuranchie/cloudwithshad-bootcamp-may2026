@@ -22,7 +22,7 @@ Cheat sheets, exam prep, glossaries, and "I wish someone had told me" tips.
 The bootcamp gets you ready for the exam. To actually sit and pass it:
 
 - 📖 [Official exam guide (CLF-C02)](https://aws.amazon.com/certification/certified-cloud-practitioner/)
-- 🎯 Tutorials Dojo practice tests (recommended — most accurate to real exam)
+- 🎯 cloudwithshad practice quizzes (link coming soon — Shadrack&apos;s own question bank)
 - 📺 freeCodeCamp's 14-hour AWS course (free on YouTube)
 - 💵 Exam cost: **$100** (taken online or at a Pearson VUE center)
 - 🏆 Pass mark: **700 / 1000** (~70%)

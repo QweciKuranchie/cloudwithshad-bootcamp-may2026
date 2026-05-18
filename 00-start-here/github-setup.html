@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Setup — cloudwithshad Bootcamp</title>
+<meta name="description" content="Step-by-step walkthrough to create your GitHub account, set up SSH keys, and fork the bootcamp repo.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy: #0A1628; --navy-2: #13243A; --navy-3: #1A2F4A;
+    --cyan: #00B4D8; --gold: #F4B942; --green: #2EA043; --red: #FF4444;
+    --white: #FFFFFF; --gray: #94A3B8;
+    --gh-purple: #6F42C1; --gh-dark: #24292E;
+    --mockup-bg: #F8F9FB; --mockup-border: #D1D5DB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--navy); color: var(--white);
+    line-height: 1.6; min-height: 100vh; overflow-x: hidden;
+  }
+
+  nav.topbar {
+    background: rgba(10,22,40,0.92); backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-inner {
+    max-width: 1280px; margin: 0 auto; padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .brand { font-size: 17px; font-weight: 500; color: var(--white); text-decoration: none; }
+  .brand span { font-weight: 800; color: var(--cyan); }
+  .nav-back {
+    color: var(--gray); text-decoration: none; font-size: 13px;
+    display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--cyan); }
+
+  .hero {
+    max-width: 1100px; margin: 0 auto;
+    padding: 64px 24px 24px; text-align: center;
+  }
+  .hero .platform-logo {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 92px; height: 92px;
+    background: var(--gh-dark);
+    border-radius: 22px; margin-bottom: 22px;
+    box-shadow: 0 10px 40px rgba(111,66,193,0.4);
+  }
+  .hero .platform-logo svg { width: 56px; height: 56px; fill: white; }
+  .hero .kicker {
+    font-size: 11px; color: var(--gh-purple);
+    letter-spacing: 3px; margin-bottom: 14px; font-weight: 700;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 54px; font-weight: 800; line-height: 1.1;
+    margin-bottom: 14px; color: var(--white);
+  }
+  .hero h1 .accent { color: var(--gh-purple); }
+  @media (max-width: 720px) { .hero h1 { font-size: 36px; } }
+  .hero .lede {
+    font-size: 19px; color: var(--gray);
+    max-width: 640px; margin: 0 auto 28px;
+  }
+  .hero-meta {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  }
+  .meta-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 8px 16px; border-radius: 18px;
+    font-size: 13px; color: #CBD5E1;
+  }
+
+  main {
+    max-width: 1280px; margin: 0 auto;
+    padding: 24px 24px 80px; position: relative;
+  }
+  .layout {
+    display: grid; grid-template-columns: 60px 1fr;
+    gap: 24px; align-items: start;
+  }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+  .progress-rail { position: sticky; top: 100px; height: max-content; padding-top: 20px; }
+  @media (max-width: 900px) { .progress-rail { display: none; } }
+  .progress-line {
+    position: relative; width: 2px;
+    background: rgba(255,255,255,0.08);
+    margin-left: 14px; height: 600px;
+  }
+  .progress-fill {
+    position: absolute; top: 0; left: 0; width: 100%; height: 0%;
+    background: linear-gradient(to bottom, var(--gh-purple), #B07CD9);
+    transition: height 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  .progress-dots {
+    position: absolute; top: 0; left: -10px; width: 22px; height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: space-between; align-items: center;
+  }
+  .progress-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--navy);
+    border: 2px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--gray);
+    cursor: pointer; transition: all 0.3s;
+  }
+  .progress-dot.active {
+    background: var(--gh-purple); border-color: var(--gh-purple);
+    color: white; transform: scale(1.15);
+  }
+  .progress-dot.completed {
+    background: var(--green); border-color: var(--green); color: white;
+  }
+
+  .steps-column { min-width: 0; }
+  .step {
+    margin-bottom: 100px; opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  }
+  .step.in-view { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .step { transition: none; opacity: 1; transform: none; }
+  }
+
+  .step-header { display: flex; align-items: center; gap: 18px; margin-bottom: 24px; }
+  .step-number {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--gh-purple), #9B68DA);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 800; color: white; flex-shrink: 0;
+  }
+  .step-title h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; font-weight: 800; color: var(--white); line-height: 1.2;
+  }
+  @media (max-width: 600px) { .step-title h2 { font-size: 24px; } }
+  .step-title .subtitle { font-size: 14px; color: var(--gray); margin-top: 4px; }
+
+  .step-body {
+    display: grid; grid-template-columns: 1.2fr 1fr;
+    gap: 32px; align-items: start;
+  }
+  @media (max-width: 900px) { .step-body { grid-template-columns: 1fr; } }
+
+  .browser-mockup {
+    background: var(--mockup-bg); border-radius: 12px;
+    overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative; min-height: 320px;
+  }
+  .browser-chrome {
+    background: #E4E7EB; padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--mockup-border);
+  }
+  .traffic-lights { display: flex; gap: 6px; }
+  .traffic-lights span { width: 12px; height: 12px; border-radius: 50%; }
+  .traffic-lights .red { background: #FF5F57; }
+  .traffic-lights .yellow { background: #FFBD2E; }
+  .traffic-lights .green { background: #28C940; }
+  .browser-url {
+    flex: 1; background: white; color: #1F2937;
+    padding: 5px 12px; border-radius: 6px;
+    font-size: 12px; font-family: 'JetBrains Mono', monospace;
+    border: 1px solid #D1D5DB;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .browser-url .lock-icon { color: var(--green); margin-right: 6px; }
+  .browser-content {
+    padding: 28px 26px; color: #1F2937;
+    min-height: 240px; position: relative; overflow: hidden;
+  }
+
+  /* Terminal mockup */
+  .terminal-mockup {
+    background: #1E1E1E; border-radius: 12px;
+    overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative; min-height: 280px;
+  }
+  .terminal-chrome {
+    background: #2D2D2D; padding: 8px 14px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #3A3A3A;
+  }
+  .terminal-title {
+    flex: 1; color: #CBD5E1; font-size: 11px; text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .terminal-content {
+    padding: 18px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: #E5E5E5; line-height: 1.8;
+    min-height: 220px;
+  }
+  .terminal-content .prompt { color: #6FE26F; }
+  .terminal-content .cmd { color: #FAFAFA; }
+  .terminal-content .output { color: #A0A0A0; }
+  .terminal-content .comment { color: #6B7280; font-style: italic; }
+  .terminal-content .accent { color: var(--gold); }
+  .terminal-line { display: block; }
+  .terminal-line.typing::after {
+    content: '▊'; color: var(--gh-purple);
+    animation: cursor-blink 0.8s infinite;
+  }
+  @keyframes cursor-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* Animated cursor */
+  .cursor {
+    position: absolute; width: 18px; height: 18px;
+    pointer-events: none; z-index: 50;
+    transition: top 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
+                left 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity: 0;
+  }
+  .cursor svg { width: 100%; height: 100%; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
+  .step.in-view .cursor.active { opacity: 1; }
+
+  @keyframes click-ripple {
+    0% { transform: scale(0.5); opacity: 0.7; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  .click-ripple {
+    position: absolute; width: 24px; height: 24px;
+    border-radius: 50%; background: var(--gh-purple);
+    pointer-events: none; z-index: 49;
+    animation: click-ripple 0.55s ease-out;
+  }
+
+  /* UI elements */
+  .ui-button {
+    display: inline-block; background: var(--green);
+    color: white; padding: 9px 20px; border-radius: 6px;
+    font-size: 14px; font-weight: 600;
+    border: none; cursor: pointer;
+  }
+  .ui-button.purple { background: var(--gh-purple); }
+  .ui-button.secondary {
+    background: white; color: var(--gh-dark);
+    border: 1px solid var(--mockup-border);
+  }
+  .ui-input {
+    width: 100%; background: white;
+    border: 1px solid var(--mockup-border);
+    padding: 8px 12px; border-radius: 4px;
+    font-size: 13px; color: #1F2937;
+    margin-bottom: 12px; font-family: inherit;
+  }
+  .ui-input.has-text { color: #1F2937; border-color: #6B7280; }
+  .ui-label {
+    display: block; font-size: 12px;
+    font-weight: 600; color: #374151; margin-bottom: 4px;
+  }
+
+  .toast {
+    position: absolute; top: 16px; right: 16px;
+    background: var(--green); color: white;
+    padding: 10px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    opacity: 0; transform: translateY(-10px);
+    transition: opacity 0.4s, transform 0.4s;
+  }
+  .toast.visible { opacity: 1; transform: translateY(0); }
+
+  @keyframes highlight-pulse-purple {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(111,66,193,0.5); }
+    50% { box-shadow: 0 0 0 8px rgba(111,66,193,0); }
+  }
+  .highlighted { animation: highlight-pulse-purple 1.5s ease-in-out 2; }
+
+  .step-content h3 {
+    font-size: 16px; font-weight: 700; color: var(--gh-purple);
+    margin-bottom: 14px; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .step-bullets { list-style: none; padding: 0; margin-bottom: 20px; }
+  .step-bullets li {
+    padding: 10px 0 10px 32px; position: relative;
+    color: #CBD5E1; font-size: 15px; line-height: 1.6;
+    opacity: 0; transform: translateX(-12px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  .step.in-view .step-bullets li { opacity: 1; transform: translateX(0); }
+  .step.in-view .step-bullets li:nth-child(1) { transition-delay: 0.2s; }
+  .step.in-view .step-bullets li:nth-child(2) { transition-delay: 0.35s; }
+  .step.in-view .step-bullets li:nth-child(3) { transition-delay: 0.5s; }
+  .step.in-view .step-bullets li:nth-child(4) { transition-delay: 0.65s; }
+  .step.in-view .step-bullets li:nth-child(5) { transition-delay: 0.8s; }
+  .step-bullets li::before {
+    content: ''; position: absolute;
+    left: 6px; top: 18px;
+    width: 8px; height: 8px;
+    background: var(--gh-purple); border-radius: 50%;
+  }
+  .step-bullets li strong { color: var(--white); font-weight: 600; }
+  .step-bullets li code {
+    background: rgba(255,255,255,0.08); color: var(--gold);
+    padding: 2px 7px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  }
+
+  .callout {
+    background: rgba(244,185,66,0.08);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px; padding: 14px 18px;
+    margin: 18px 0; font-size: 14px;
+    color: #FCE7B5; line-height: 1.6;
+  }
+  .callout strong { color: var(--gold); }
+  .callout.warn {
+    background: rgba(255,68,68,0.08);
+    border-left-color: var(--red); color: #FFC9C9;
+  }
+  .callout.warn strong { color: var(--red); }
+  .callout.tip {
+    background: rgba(0,180,216,0.08);
+    border-left-color: var(--cyan); color: #B5E5F1;
+  }
+  .callout.tip strong { color: var(--cyan); }
+
+  .replay-btn {
+    position: absolute; bottom: 12px; right: 12px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid var(--mockup-border);
+    padding: 5px 11px; border-radius: 4px;
+    font-size: 11px; color: #4B5563; cursor: pointer;
+    font-family: inherit; z-index: 10;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .terminal-mockup .replay-btn {
+    background: rgba(255,255,255,0.1); color: #CBD5E1; border-color: rgba(255,255,255,0.15);
+  }
+  .browser-mockup:hover .replay-btn,
+  .terminal-mockup:hover .replay-btn { opacity: 1; }
+  .replay-btn:hover { background: white; color: var(--gh-purple); }
+
+  .completion {
+    background: linear-gradient(135deg, rgba(46,160,67,0.12), rgba(111,66,193,0.08));
+    border: 1px solid rgba(46,160,67,0.35);
+    border-radius: 18px; padding: 48px 36px;
+    text-align: center; margin-top: 40px;
+  }
+  .completion .ico { font-size: 56px; margin-bottom: 16px; }
+  .completion h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px; font-weight: 800;
+    color: var(--white); margin-bottom: 12px;
+  }
+  .completion h2 .accent { color: var(--green); }
+  .completion p {
+    font-size: 17px; color: var(--gray);
+    max-width: 540px; margin: 0 auto 28px;
+  }
+  .completion-actions {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px; border-radius: 10px;
+    font-size: 14px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+    border: none; font-family: inherit;
+  }
+  .btn-primary { background: var(--cyan); color: var(--navy); }
+  .btn-primary:hover {
+    background: #00C8F0; transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,180,216,0.35);
+  }
+  .btn-secondary {
+    background: transparent; color: var(--white);
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.06); border-color: var(--cyan); }
+
+  /* GitHub-specific UI */
+  .gh-screen .header {
+    background: var(--gh-dark); color: white;
+    padding: 14px 20px; margin: -28px -26px 22px;
+    font-size: 14px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .gh-logo-mark {
+    display: flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px;
+    background: white; border-radius: 50%;
+  }
+  .gh-logo-mark svg { width: 18px; height: 18px; fill: var(--gh-dark); }
+  .gh-screen h4 {
+    font-size: 17px; font-weight: 700;
+    color: #24292E; margin-bottom: 12px;
+  }
+  .gh-screen .form-group { margin-bottom: 14px; }
+  .gh-repo-row {
+    background: white; border: 1px solid #D1D5DB;
+    border-radius: 6px; padding: 14px 18px;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .gh-repo-icon {
+    width: 16px; height: 16px;
+    background: var(--gh-purple); border-radius: 3px;
+  }
+  .gh-repo-name { color: #0969DA; font-weight: 600; font-size: 14px; flex: 1; }
+  .gh-fork-btn {
+    background: white; color: #24292E;
+    border: 1px solid #D1D5DB;
+    padding: 5px 12px; border-radius: 6px;
+    font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+
+  .footer-nav {
+    display: flex; justify-content: space-between; gap: 12px;
+    margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-nav a {
+    color: var(--gray); text-decoration: none;
+    font-size: 14px; transition: color 0.2s;
+  }
+  .footer-nav a:hover { color: var(--cyan); }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="brand">cloud<span>withshad</span></a>
+    <a href="../index.html#start" class="nav-back">← Back to setup</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="platform-logo">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+    </svg>
+  </div>
+  <div class="kicker">STEP 2 OF 4 · SETUP</div>
+  <h1>Set up <span class="accent">GitHub</span></h1>
+  <p class="lede">Account, SSH keys, and forking the bootcamp repo. Your professional portfolio starts here.</p>
+  <div class="hero-meta">
+    <span class="meta-pill">⏱️ 20 minutes</span>
+    <span class="meta-pill">💻 Terminal involved</span>
+    <span class="meta-pill">🆓 Always free</span>
+  </div>
+</div>
+
+<main>
+<div class="layout">
+
+  <div class="progress-rail">
+    <div class="progress-line">
+      <div class="progress-fill" id="progressFill"></div>
+      <div class="progress-dots">
+        <div class="progress-dot active" data-step="1">1</div>
+        <div class="progress-dot" data-step="2">2</div>
+        <div class="progress-dot" data-step="3">3</div>
+        <div class="progress-dot" data-step="4">4</div>
+        <div class="progress-dot" data-step="5">5</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps-column">
+
+    <!-- ═══════════════════ STEP 1: Create account ═══════════════════ -->
+    <section class="step" id="step-1" data-step="1">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div class="step-title">
+          <h2>Create your account</h2>
+          <div class="subtitle">at github.com/signup</div>
+        </div>
+      </div>
+
+      <div class="step-body">
+        <div class="browser-mockup" data-anim="step-1">
+          <div class="browser-chrome">
+            <div class="traffic-lights"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+            <div class="browser-url"><span class="lock-icon">🔒</span><span class="url-text">github.com/signup</span></div>
+          </div>
+          <div class="browser-content gh-screen">
+            <div class="header">
+              <div class="gh-logo-mark">
+                <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              </div>
+              <span>Join GitHub</span>
+            </div>
+            <h4>Welcome to GitHub!</h4>
+            <p style="font-size:13px;color:#6B7280;margin-bottom:18px;">Let's begin the adventure.</p>
+            <div class="form-group">
+              <label class="ui-label">Enter your email</label>
+              <input class="ui-input" id="input-1-email" placeholder="" readonly>
+            </div>
+            <button class="ui-button" id="btn-1-continue">Continue →</button>
+          </div>
+          <div class="cursor" id="cursor-1">
+            <svg viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="1">
+              <path d="M5.5 3.21L20.5 12.21L13.5 13.21L9.5 21.21L5.5 3.21Z"/>
+            </svg>
+          </div>
+          <button class="replay-btn" onclick="playStep(1)">↻ Replay</button>
+        </div>
+
+        <div class="step-content">
+          <h3>The basics</h3>
+          <ul class="step-bullets">
+            <li>Go to <code>github.com/signup</code></li>
+            <li>Use a personal email (not work or school) — this account is yours for your whole career.</li>
+            <li>Verify your email, then choose a strong password and save it in a password manager.</li>
+            <li>Enable <strong>two-factor authentication</strong> immediately in Settings → Password and authentication.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ STEP 2: Choose a good username ═══════════════════ -->
+    <section class="step" id="step-2" data-step="2">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div class="step-title">
+          <h2>Pick a professional username</h2>
+          <div class="subtitle">Recruiters will see this — make it count</div>
+        </div>
+      </div>
+
+      <div class="step-body">
+        <div class="browser-mockup" data-anim="step-2">
+          <div class="browser-chrome">
+            <div class="traffic-lights"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+            <div class="browser-url"><span class="lock-icon">🔒</span><span class="url-text">github.com/signup/username</span></div>
+          </div>
+          <div class="browser-content gh-screen">
+            <div class="header">
+              <div class="gh-logo-mark">
+                <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              </div>
+              <span>Choose your username</span>
+            </div>
+            <h4>github.com/<span id="username-display">_______</span></h4>
+            <p style="font-size:13px;color:#6B7280;margin-bottom:14px;">This is your unique URL on GitHub — and your professional handle.</p>
+            <div class="form-group">
+              <label class="ui-label">Username</label>
+              <input class="ui-input" id="input-2-username" placeholder="" readonly>
+              <div id="username-feedback" style="font-size:12px;color:#2EA043;margin-top:-6px;display:none;">
+                ✓ <strong>shadrack-darku</strong> is available
+              </div>
+            </div>
+            <button class="ui-button" id="btn-2-continue">Continue</button>
+          </div>
+          <div class="cursor" id="cursor-2">
+            <svg viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="1">
+              <path d="M5.5 3.21L20.5 12.21L13.5 13.21L9.5 21.21L5.5 3.21Z"/>
+            </svg>
+          </div>
+          <button class="replay-btn" onclick="playStep(2)">↻ Replay</button>
+        </div>
+
+        <div class="step-content">
+          <h3>Username matters more than you think</h3>
+          <ul class="step-bullets">
+            <li><strong>Good:</strong> <code>shadrack-darku</code>, <code>kofi-mensah</code>, <code>akosua-codes</code></li>
+            <li><strong>Bad:</strong> <code>xX_dragon_99_Xx</code>, <code>cooldev420</code>, anything you'd be embarrassed to put on a CV</li>
+            <li>Recruiters Google your GitHub username. Treat it like part of your professional identity.</li>
+            <li>You CAN change it later but ALL your old GitHub URLs break. Pick well now.</li>
+          </ul>
+          <div class="callout">
+            <strong>💡 Pro tip:</strong> if your name is taken, try variations like <code>firstname-lastname</code>, <code>firstname-builds</code>, or <code>firstname-codes</code>. Avoid random numbers — they look like throwaway accounts.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ STEP 3: SSH keys ═══════════════════ -->
+    <section class="step" id="step-3" data-step="3">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-title">
+          <h2>Generate SSH keys</h2>
+          <div class="subtitle">So you never type a password to push code</div>
+        </div>
+      </div>
+
+      <div class="step-body">
+        <div class="terminal-mockup" data-anim="step-3">
+          <div class="terminal-chrome">
+            <div class="traffic-lights"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+            <div class="terminal-title">Terminal — bash</div>
+          </div>
+          <div class="terminal-content" id="terminal-3">
+            <span class="terminal-line"><span class="comment"># Generate a new SSH key (one-time setup)</span></span>
+            <span class="terminal-line"><span class="prompt">shad@laptop:~$</span> <span class="cmd" id="cmd-3-1"></span></span>
+            <span class="terminal-line" id="line-3-2" style="display:none;"><span class="output">Generating public/private ed25519 key pair...</span></span>
+            <span class="terminal-line" id="line-3-3" style="display:none;"><span class="output">Your identification has been saved in /home/shad/.ssh/id_ed25519</span></span>
+            <span class="terminal-line" id="line-3-4" style="display:none;"><span class="output">Your public key has been saved in /home/shad/.ssh/id_ed25519.pub</span></span>
+            <span class="terminal-line" id="line-3-5" style="display:none;"><span class="output">The key's randomart image is:</span></span>
+            <span class="terminal-line" id="line-3-6" style="display:none;"><span class="accent">+--[ED25519 256]--+</span></span>
+            <span class="terminal-line" id="line-3-7" style="display:none;"><span class="accent">|       .o*+B==o  |</span></span>
+            <span class="terminal-line" id="line-3-8" style="display:none;"><span class="accent">|        +oO.= o  |</span></span>
+            <span class="terminal-line" id="line-3-9" style="display:none;"><span class="accent">+----[SHA256]-----+</span></span>
+            <span class="terminal-line" id="line-3-10" style="display:none;"><span class="prompt">shad@laptop:~$</span> <span style="color:#6FE26F;">█</span></span>
+          </div>
+          <button class="replay-btn" onclick="playStep(3)">↻ Replay</button>
+        </div>
+
+        <div class="step-content">
+          <h3>The SSH dance, explained</h3>
+          <ul class="step-bullets">
+            <li>An SSH key is a pair: a <strong>private</strong> key (stays on your laptop, secret) and a <strong>public</strong> key (you give to GitHub).</li>
+            <li>The command: <code>ssh-keygen -t ed25519 -C "your@email.com"</code></li>
+            <li>Press Enter at every prompt to accept defaults (location, no passphrase).</li>
+            <li>Two files are created: <code>id_ed25519</code> (private) and <code>id_ed25519.pub</code> (public).</li>
+          </ul>
+          <div class="callout warn">
+            <strong>🚨 Never share the private key.</strong> Treat it like a password. Only share the <code>.pub</code> file.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ STEP 4: Add SSH key to GitHub ═══════════════════ -->
+    <section class="step" id="step-4" data-step="4">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <div class="step-title">
+          <h2>Add the public key to GitHub</h2>
+          <div class="subtitle">Copy, paste, save</div>
+        </div>
+      </div>
+
+      <div class="step-body">
+        <div class="browser-mockup" data-anim="step-4">
+          <div class="browser-chrome">
+            <div class="traffic-lights"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+            <div class="browser-url"><span class="lock-icon">🔒</span><span class="url-text">github.com/settings/ssh/new</span></div>
+          </div>
+          <div class="browser-content gh-screen">
+            <div class="header">
+              <div class="gh-logo-mark">
+                <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              </div>
+              <span>SSH keys / Add new</span>
+            </div>
+            <h4>Add new SSH key</h4>
+            <div class="form-group">
+              <label class="ui-label">Title</label>
+              <input class="ui-input" id="input-4-title" placeholder="" readonly>
+            </div>
+            <div class="form-group">
+              <label class="ui-label">Key</label>
+              <textarea class="ui-input" id="input-4-key" rows="3" readonly style="font-family:'JetBrains Mono',monospace;font-size:11px;resize:none;"></textarea>
+            </div>
+            <button class="ui-button purple" id="btn-4-add">Add SSH key</button>
+          </div>
+          <div class="cursor" id="cursor-4">
+            <svg viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="1">
+              <path d="M5.5 3.21L20.5 12.21L13.5 13.21L9.5 21.21L5.5 3.21Z"/>
+            </svg>
+          </div>
+          <button class="replay-btn" onclick="playStep(4)">↻ Replay</button>
+        </div>
+
+        <div class="step-content">
+          <h3>Copy the public key, paste it</h3>
+          <ul class="step-bullets">
+            <li>Copy your public key. On Mac: <code>pbcopy &lt; ~/.ssh/id_ed25519.pub</code></li>
+            <li>On Windows (Git Bash): <code>cat ~/.ssh/id_ed25519.pub | clip</code></li>
+            <li>On Linux: <code>cat ~/.ssh/id_ed25519.pub</code> then highlight + copy</li>
+            <li>Go to <code>github.com/settings/ssh/new</code>. Title: "My laptop". Paste the key into the Key field. Save.</li>
+          </ul>
+          <div class="callout tip">
+            <strong>💡 Did the copy work?</strong> The key should start with <code>ssh-ed25519</code> and end with your email. If you see only one line, it copied right.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ STEP 5: Test the connection ═══════════════════ -->
+    <section class="step" id="step-5" data-step="5">
+      <div class="step-header">
+        <div class="step-number">5</div>
+        <div class="step-title">
+          <h2>Test the connection</h2>
+          <div class="subtitle">Confirm GitHub recognizes you</div>
+        </div>
+      </div>
+
+      <div class="step-body">
+        <div class="terminal-mockup" data-anim="step-5">
+          <div class="terminal-chrome">
+            <div class="traffic-lights"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+            <div class="terminal-title">Terminal — bash</div>
+          </div>
+          <div class="terminal-content" id="terminal-5">
+            <span class="terminal-line"><span class="comment"># Test SSH connection to GitHub</span></span>
+            <span class="terminal-line"><span class="prompt">shad@laptop:~$</span> <span class="cmd" id="cmd-5-1"></span></span>
+            <span class="terminal-line" id="line-5-2" style="display:none;"><span class="output">The authenticity of host 'github.com' can't be established.</span></span>
+            <span class="terminal-line" id="line-5-3" style="display:none;"><span class="output">ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.</span></span>
+            <span class="terminal-line" id="line-5-4" style="display:none;"><span class="output">Are you sure you want to continue connecting? <span class="accent">yes</span></span></span>
+            <span class="terminal-line" id="line-5-5" style="display:none;"><span class="output">Warning: Permanently added 'github.com' to the list of known hosts.</span></span>
+            <span class="terminal-line" id="line-5-6" style="display:none;"><span style="color:#6FE26F;font-weight:600;">Hi shadrack-darku! You've successfully authenticated, but GitHub does not provide shell access.</span></span>
+            <span class="terminal-line" id="line-5-7" style="display:none;"><span class="prompt">shad@laptop:~$</span> <span style="color:#6FE26F;">█</span></span>
+          </div>
+          <button class="replay-btn" onclick="playStep(5)">↻ Replay</button>
+        </div>
+
+        <div class="step-content">
+          <h3>The "you're in" moment</h3>
+          <ul class="step-bullets">
+            <li>Run: <code>ssh -T git@github.com</code></li>
+            <li>First time, you'll see a fingerprint warning — type <code>yes</code> and Enter.</li>
+            <li>You should see: <strong>"Hi [your-username]! You've successfully authenticated..."</strong></li>
+            <li>If you see that, you're done. SSH works, you'll never type a password again.</li>
+          </ul>
+          <div class="callout warn">
+            <strong>⚠️ "Permission denied (publickey)"?</strong> The key didn't make it to GitHub. Go back to step 4, copy and paste again. Make sure you copied the <code>.pub</code> (public) file, not the private one.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="completion">
+  <div class="ico">🚀</div>
+  <h2>GitHub is <span class="accent">ready</span></h2>
+  <p>Account created, SSH keys set up, GitHub recognizes you. Now let's get Python and VS Code installed.</p>
+  <div class="completion-actions">
+    <a href="python-vscode-setup.html" class="btn btn-primary">Next: Python &amp; VS Code →</a>
+    <a href="../index.html" class="btn btn-secondary">← Back to bootcamp</a>
+  </div>
+</div>
+
+<div class="footer-nav">
+  <a href="aws-account-setup.html">← AWS setup</a>
+  <a href="python-vscode-setup.html">Python &amp; VS Code →</a>
+</div>
+
+</main>
+
+<script>
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const playedSteps = new Set();
+
+  function moveCursorTo(stepNum, targetEl, callback) {
+    const cursor = document.getElementById(`cursor-${stepNum}`);
+    if (!cursor || !targetEl) { callback && callback(); return; }
+    const mockup = cursor.parentElement;
+    const cursorRect = mockup.getBoundingClientRect();
+    const targetRect = targetEl.getBoundingClientRect();
+    const left = targetRect.left - cursorRect.left + targetRect.width / 2 - 9;
+    const top  = targetRect.top  - cursorRect.top  + targetRect.height / 2 - 9;
+    cursor.classList.add('active');
+    cursor.style.left = `${left}px`;
+    cursor.style.top  = `${top}px`;
+    setTimeout(() => {
+      const ripple = document.createElement('div');
+      ripple.className = 'click-ripple';
+      ripple.style.left = `${left - 3}px`;
+      ripple.style.top  = `${top - 3}px`;
+      mockup.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+      callback && callback();
+    }, 750);
+  }
+
+  function typeInto(input, text, speed, callback) {
+    if (!input) { callback && callback(); return; }
+    input.value = '';
+    input.placeholder = '';
+    input.classList.add('has-text');
+    let i = 0;
+    const interval = setInterval(() => {
+      input.value = text.slice(0, ++i);
+      if (i >= text.length) {
+        clearInterval(interval);
+        callback && callback();
+      }
+    }, speed);
+  }
+
+  function typeIntoSpan(spanEl, text, speed, callback) {
+    if (!spanEl) { callback && callback(); return; }
+    spanEl.textContent = '';
+    spanEl.classList.add('typing');
+    let i = 0;
+    const interval = setInterval(() => {
+      spanEl.textContent = text.slice(0, ++i);
+      if (i >= text.length) {
+        clearInterval(interval);
+        spanEl.classList.remove('typing');
+        callback && callback();
+      }
+    }, speed);
+  }
+
+  function revealLines(prefix, count, delay, callback) {
+    let i = 2;
+    const reveal = () => {
+      if (i > count) { callback && callback(); return; }
+      const el = document.getElementById(`${prefix}-${i}`);
+      if (el) el.style.display = 'block';
+      i++;
+      setTimeout(reveal, delay);
+    };
+    setTimeout(reveal, delay);
+  }
+
+  function showToast(stepEl, message) {
+    const mockup = stepEl.querySelector('.browser-mockup, .terminal-mockup');
+    if (!mockup) return;
+    const existing = mockup.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<span>✓</span><span>${message}</span>`;
+    mockup.appendChild(toast);
+    setTimeout(() => toast.classList.add('visible'), 50);
+    setTimeout(() => {
+      toast.classList.remove('visible');
+      setTimeout(() => toast.remove(), 400);
+    }, 2400);
+  }
+
+  function playStep(num) {
+    if (reducedMotion) return;
+    const step = document.getElementById(`step-${num}`);
+    if (!step) return;
+
+    if (num === 1) {
+      const email = document.getElementById('input-1-email');
+      const btn = document.getElementById('btn-1-continue');
+      moveCursorTo(1, email, () => {
+        typeInto(email, 'shadrack@example.com', 50, () => {
+          moveCursorTo(1, btn, () => {
+            btn.classList.add('highlighted');
+            showToast(step, 'Verification email sent');
+          });
+        });
+      });
+    }
+
+    else if (num === 2) {
+      const input = document.getElementById('input-2-username');
+      const display = document.getElementById('username-display');
+      const feedback = document.getElementById('username-feedback');
+      const btn = document.getElementById('btn-2-continue');
+      moveCursorTo(2, input, () => {
+        const target = 'shadrack-darku';
+        let i = 0;
+        const interval = setInterval(() => {
+          input.value = target.slice(0, ++i);
+          input.classList.add('has-text');
+          display.textContent = target.slice(0, i);
+          if (i >= target.length) {
+            clearInterval(interval);
+            setTimeout(() => {
+              feedback.style.display = 'block';
+              moveCursorTo(2, btn, () => {
+                btn.classList.add('highlighted');
+                showToast(step, 'Username available');
+              });
+            }, 400);
+          }
+        }, 80);
+      });
+    }
+
+    else if (num === 3) {
+      const cmd = document.getElementById('cmd-3-1');
+      typeIntoSpan(cmd, 'ssh-keygen -t ed25519 -C "shadrack@example.com"', 30, () => {
+        revealLines('line-3', 10, 250, () => {
+          showToast(step, 'SSH key generated');
+        });
+      });
+    }
+
+    else if (num === 4) {
+      const title = document.getElementById('input-4-title');
+      const key = document.getElementById('input-4-key');
+      const btn = document.getElementById('btn-4-add');
+      moveCursorTo(4, title, () => {
+        typeInto(title, 'My laptop', 60, () => {
+          moveCursorTo(4, key, () => {
+            typeInto(key, 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH8d... shadrack@example.com', 18, () => {
+              moveCursorTo(4, btn, () => {
+                btn.classList.add('highlighted');
+                showToast(step, 'SSH key added');
+              });
+            });
+          });
+        });
+      });
+    }
+
+    else if (num === 5) {
+      const cmd = document.getElementById('cmd-5-1');
+      typeIntoSpan(cmd, 'ssh -T git@github.com', 40, () => {
+        revealLines('line-5', 7, 350, () => {
+          showToast(step, 'Authentication successful');
+        });
+      });
+    }
+
+    playedSteps.add(num);
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const stepNum = parseInt(entry.target.dataset.step);
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        if (!playedSteps.has(stepNum)) {
+          setTimeout(() => playStep(stepNum), 600);
+        }
+        updateProgress(stepNum);
+      }
+    });
+  }, { threshold: 0.4 });
+
+  document.querySelectorAll('.step').forEach(step => observer.observe(step));
+
+  function updateProgress(currentStep) {
+    const total = 5;
+    const fill = document.getElementById('progressFill');
+    fill.style.height = `${((currentStep - 0.5) / total) * 100}%`;
+    document.querySelectorAll('.progress-dot').forEach(dot => {
+      const stepNum = parseInt(dot.dataset.step);
+      dot.classList.remove('active', 'completed');
+      if (stepNum < currentStep) dot.classList.add('completed');
+      else if (stepNum === currentStep) dot.classList.add('active');
+    });
+  }
+
+  document.querySelectorAll('.progress-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      const stepNum = parseInt(dot.dataset.step);
+      const step = document.getElementById(`step-${stepNum}`);
+      if (step) step.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>

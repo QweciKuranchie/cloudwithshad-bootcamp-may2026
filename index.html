@@ -69,6 +69,21 @@
   @media (max-width: 720px) { .hero h1 { font-size: 40px; } .hero { padding: 60px 20px 50px; } }
   .hero-sub { font-size: 19px; color: #B8C5D6; margin-bottom: 36px; max-width: 680px; margin-left: auto; margin-right: auto; }
   .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .hero-curriculum-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 22px;
+    color: var(--gray);
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.2s;
+    border-bottom: 1px dashed transparent;
+  }
+  .hero-curriculum-link:hover {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
   .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 700; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; font-family: inherit; }
   .btn-primary { background: var(--cyan); color: var(--navy); }
   .btn-primary:hover { background: #00C8F0; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,180,216,0.35); }
@@ -273,6 +288,10 @@
       <a href="#start" class="btn btn-primary">🚀 Start the bootcamp →</a>
       <a href="https://github.com/cloudwithshad/cloudwithshad-bootcamp-may2026" class="btn btn-secondary" target="_blank" rel="noopener">⭐ Star on GitHub</a>
     </div>
+
+    <a href="00-start-here/cloudwithshad-curriculum.pdf" class="hero-curriculum-link" download>
+      📕 Or just download the curriculum PDF →
+    </a>
 
     <div class="countdown-hub hidden" id="countdownHub">
       <div class="countdown-icon">⏳</div>

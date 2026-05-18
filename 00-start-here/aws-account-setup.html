@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Account Setup — cloudwithshad Bootcamp</title>
+<meta name="description" content="Step-by-step walkthrough to create your AWS account, secure it, and set up billing alerts. With West Africa-specific tips.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy:        #0A1628;
+    --navy-2:      #13243A;
+    --navy-3:      #1A2F4A;
+    --cyan:        #00B4D8;
+    --gold:        #F4B942;
+    --green:       #2EA043;
+    --red:         #FF4444;
+    --white:       #FFFFFF;
+    --gray:        #94A3B8;
+    --gray-2:      #64748B;
+    --aws-orange:  #FF9900;
+    --aws-dark:    #232F3E;
+    --mockup-bg:   #F8F9FB;
+    --mockup-border: #D1D5DB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ═══════════════════ NAV ═══════════════════ */
+  nav.topbar {
+    background: rgba(10,22,40,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-inner {
+    max-width: 1280px; margin: 0 auto;
+    padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .brand { font-size: 17px; font-weight: 500; color: var(--white); text-decoration: none; }
+  .brand span { font-weight: 800; color: var(--cyan); }
+  .nav-back {
+    color: var(--gray); text-decoration: none; font-size: 13px;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--cyan); }
+
+  /* ═══════════════════ HERO ═══════════════════ */
+  .hero {
+    max-width: 1100px; margin: 0 auto;
+    padding: 64px 24px 24px;
+    text-align: center;
+  }
+  .hero .platform-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 92px; height: 92px;
+    background: var(--aws-orange);
+    border-radius: 22px;
+    margin-bottom: 22px;
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--aws-dark);
+    letter-spacing: -1px;
+    box-shadow: 0 10px 40px rgba(255,153,0,0.3);
+  }
+  .hero .kicker {
+    font-size: 11px;
+    color: var(--aws-orange);
+    letter-spacing: 3px;
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 54px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 14px;
+    color: var(--white);
+  }
+  .hero h1 .accent { color: var(--aws-orange); }
+  @media (max-width: 720px) { .hero h1 { font-size: 36px; } }
+  .hero .lede {
+    font-size: 19px;
+    color: var(--gray);
+    max-width: 640px;
+    margin: 0 auto 28px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 8px 16px;
+    border-radius: 18px;
+    font-size: 13px;
+    color: #CBD5E1;
+  }
+
+  /* ═══════════════════ MAIN LAYOUT ═══════════════════ */
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 24px 80px;
+    position: relative;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* ─── Progress rail (left side) ─── */
+  .progress-rail {
+    position: sticky;
+    top: 100px;
+    height: max-content;
+    padding-top: 20px;
+  }
+  @media (max-width: 900px) { .progress-rail { display: none; } }
+  .progress-line {
+    position: relative;
+    width: 2px;
+    background: rgba(255,255,255,0.08);
+    margin-left: 14px;
+    height: 600px;
+  }
+  .progress-fill {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 0%;
+    background: linear-gradient(to bottom, var(--aws-orange), var(--gold));
+    transition: height 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  .progress-dots {
+    position: absolute; top: 0; left: -10px;
+    width: 22px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .progress-dot {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--navy);
+    border: 2px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .progress-dot.active {
+    background: var(--aws-orange);
+    border-color: var(--aws-orange);
+    color: var(--aws-dark);
+    transform: scale(1.15);
+  }
+  .progress-dot.completed {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--white);
+  }
+
+  /* ─── Steps content (right side) ─── */
+  .steps-column {
+    min-width: 0;
+  }
+
+  .step {
+    margin-bottom: 100px;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  }
+  .step.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .step { transition: none; opacity: 1; transform: none; }
+  }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+  .step-number {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--aws-orange), #FFB94F);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--aws-dark);
+    flex-shrink: 0;
+  }
+  .step-title h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.2;
+  }
+  @media (max-width: 600px) { .step-title h2 { font-size: 24px; } }
+  .step-title .subtitle {
+    font-size: 14px;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+
+  /* ─── Step body: mockup + content side-by-side ─── */
+  .step-body {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .step-body { grid-template-columns: 1fr; }
+  }
+
+  /* ─── Browser mockup ─── */
+  .browser-mockup {
+    background: var(--mockup-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    min-height: 320px;
+  }
+  .browser-chrome {
+    background: #E4E7EB;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--mockup-border);
+  }
+  .traffic-lights {
+    display: flex;
+    gap: 6px;
+  }
+  .traffic-lights span {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+  }
+  .traffic-lights .red { background: #FF5F57; }
+  .traffic-lights .yellow { background: #FFBD2E; }
+  .traffic-lights .green { background: #28C940; }
+  .browser-url {
+    flex: 1;
+    background: white;
+    color: #1F2937;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid #D1D5DB;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .browser-url .lock-icon { color: var(--green); margin-right: 6px; }
+
+  .browser-content {
+    padding: 28px 26px;
+    color: #1F2937;
+    min-height: 240px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ─── Terminal mockup ─── */
+  .terminal-mockup {
+    background: #1E1E1E;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .terminal-chrome {
+    background: #2D2D2D;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #3A3A3A;
+  }
+  .terminal-title {
+    flex: 1;
+    color: #CBD5E1;
+    font-size: 11px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .terminal-content {
+    padding: 16px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #E5E5E5;
+    line-height: 1.7;
+    min-height: 200px;
+  }
+  .terminal-content .prompt { color: var(--green); }
+  .terminal-content .output { color: #CBD5E1; }
+  .terminal-content .comment { color: #6B7280; }
+
+  /* ─── Animated cursor ─── */
+  .cursor {
+    position: absolute;
+    width: 18px; height: 18px;
+    pointer-events: none;
+    z-index: 50;
+    transition: top 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity: 0;
+  }
+  .cursor svg {
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+  }
+  .step.in-view .cursor.active { opacity: 1; }
+
+  /* Click ripple animation */
+  @keyframes click-ripple {
+    0% { transform: scale(0.5); opacity: 0.7; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  .click-ripple {
+    position: absolute;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--aws-orange);
+    pointer-events: none;
+    z-index: 49;
+    animation: click-ripple 0.55s ease-out;
+  }
+
+  /* ─── UI elements inside mockups ─── */
+  .ui-button {
+    display: inline-block;
+    background: var(--aws-orange);
+    color: white;
+    padding: 9px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+  .ui-button.secondary {
+    background: white;
+    color: var(--aws-dark);
+    border: 1px solid var(--mockup-border);
+  }
+  .ui-input {
+    width: 100%;
+    background: white;
+    border: 1px solid var(--mockup-border);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #1F2937;
+    margin-bottom: 12px;
+    font-family: inherit;
+  }
+  .ui-input.has-text {
+    color: #1F2937;
+    border-color: #6B7280;
+  }
+  .ui-input::after {
+    content: '|';
+    color: var(--aws-orange);
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  .ui-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+  }
+
+  /* Toast / success notification */
+  .toast {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--green);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.4s, transform 0.4s;
+  }
+  .toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Highlight glow around button */
+  @keyframes highlight-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,153,0,0.5); }
+    50% { box-shadow: 0 0 0 8px rgba(255,153,0,0); }
+  }
+  .highlighted {
+    animation: highlight-pulse 1.5s ease-in-out 2;
+  }
+
+  /* ─── Content bullets ─── */
+  .step-content h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--aws-orange);
+    margin-bottom: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .step-bullets {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+  .step-bullets li {
+    padding: 10px 0 10px 32px;
+    position: relative;
+    color: #CBD5E1;
+    font-size: 15px;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateX(-12px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  .step.in-view .step-bullets li {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .step.in-view .step-bullets li:nth-child(1) { transition-delay: 0.2s; }
+  .step.in-view .step-bullets li:nth-child(2) { transition-delay: 0.35s; }
+  .step.in-view .step-bullets li:nth-child(3) { transition-delay: 0.5s; }
+  .step.in-view .step-bullets li:nth-child(4) { transition-delay: 0.65s; }
+  .step.in-view .step-bullets li:nth-child(5) { transition-delay: 0.8s; }
+  .step-bullets li::before {
+    content: '';
+    position: absolute;
+    left: 6px; top: 18px;
+    width: 8px; height: 8px;
+    background: var(--aws-orange);
+    border-radius: 50%;
+  }
+  .step-bullets li strong { color: var(--white); font-weight: 600; }
+  .step-bullets li code {
+    background: rgba(255,255,255,0.08);
+    color: var(--gold);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+
+  /* Callouts */
+  .callout {
+    background: rgba(244,185,66,0.08);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-size: 14px;
+    color: #FCE7B5;
+    line-height: 1.6;
+  }
+  .callout strong { color: var(--gold); }
+  .callout.warn {
+    background: rgba(255,68,68,0.08);
+    border-left-color: var(--red);
+    color: #FFC9C9;
+  }
+  .callout.warn strong { color: var(--red); }
+  .callout.tip {
+    background: rgba(0,180,216,0.08);
+    border-left-color: var(--cyan);
+    color: #B5E5F1;
+  }
+  .callout.tip strong { color: var(--cyan); }
+
+  /* Replay button */
+  .replay-btn {
+    position: absolute;
+    bottom: 12px; right: 12px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid var(--mockup-border);
+    padding: 5px 11px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #4B5563;
+    cursor: pointer;
+    font-family: inherit;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .browser-mockup:hover .replay-btn,
+  .terminal-mockup:hover .replay-btn {
+    opacity: 1;
+  }
+  .replay-btn:hover { background: white; color: var(--aws-orange); }
+
+  /* ─── Completion section ─── */
+  .completion {
+    background: linear-gradient(135deg, rgba(46,160,67,0.12), rgba(244,185,66,0.08));
+    border: 1px solid rgba(46,160,67,0.35);
+    border-radius: 18px;
+    padding: 48px 36px;
+    text-align: center;
+    margin-top: 40px;
+  }
+  .completion .ico {
+    font-size: 56px;
+    margin-bottom: 16px;
+  }
+  .completion h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .completion h2 .accent { color: var(--green); }
+  .completion p {
+    font-size: 17px;
+    color: var(--gray);
+    max-width: 540px;
+    margin: 0 auto 28px;
+  }
+  .completion-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--cyan);
+    color: var(--navy);
+  }
+  .btn-primary:hover {
+    background: #00C8F0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,180,216,0.35);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: var(--cyan);
+  }
+
+  /* AWS-specific UI styling for mockup screens */
+  .aws-screen .header {
+    background: var(--aws-dark);
+    color: white;
+    padding: 14px 20px;
+    margin: -28px -26px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .aws-logo-mark {
+    background: var(--aws-orange);
+    color: var(--aws-dark);
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-weight: 800;
+    font-size: 12px;
+  }
+  .aws-screen h4 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #232F3E;
+    margin-bottom: 12px;
+  }
+  .aws-screen .form-group {
+    margin-bottom: 14px;
+  }
+
+  /* ─── Sub-page footer nav ─── */
+  .footer-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-nav a {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .footer-nav a:hover { color: var(--cyan); }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="brand">cloud<span>withshad</span></a>
+    <a href="../index.html#start" class="nav-back">← Back to setup</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="platform-logo">aws</div>
+  <div class="kicker">STEP 1 OF 4 · SETUP</div>
+  <h1>Create your <span class="accent">AWS account</span></h1>
+  <p class="lede">A free-tier AWS account in ~15 minutes. With West Africa-specific tips for the bits that trip people up.</p>
+  <div class="hero-meta">
+    <span class="meta-pill">⏱️ 15 minutes</span>
+    <span class="meta-pill">💳 Credit/debit card needed</span>
+    <span class="meta-pill">🆓 Free tier covers everything</span>
+  </div>
+</div>
+
+<main>
+<div class="layout">
+
+  <!-- Progress rail -->
+  <div class="progress-rail">
+    <div class="progress-line">
+      <div class="progress-fill" id="progressFill"></div>
+      <div class="progress-dots">
+        <div class="progress-dot active" data-step="1">1</div>
+        <div class="progress-dot" data-step="2">2</div>
+        <div class="progress-dot" data-step="3">3</div>
+        <div class="progress-dot" data-step="4">4</div>
+        <div class="progress-dot" data-step="5">5</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps-column">
+
+    <!-- ═══════════════════ STEP 1 ═══════════════════ -->
+    <section class="step" id="step-1" data-step="1">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div class="step-title">
+          <h2>Open aws.amazon.com</h2>
+          <div class="subtitle">Find the "Create AWS Account" button</div>
+        </div>
+      </div>
+
+      <div class="step-body">
+        <!-- Browser mockup -->
+        <div class="browser-mockup" data-anim="step-1">
+          <div class="browser-chrome">
+            <div class="traffic-lights"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+            <div class="browser-url"><span class="lock-icon">🔒</span><span class="url-text">aws.amazon.com</span></div>
+          </div>
+          <div class="browser-content aws-screen">
+            <div class="header">
+              <span class="aws-logo-mark">aws</span>
+              <span>Sign In to the Console</span>
+            </div>
+            <h4>Build the future with AWS</h4>
+            <p style="font-size:13px;color:#6B7280;margin-bottom:18px;">Get started with 200+ AWS services. Free tier includes 750 hours of compute monthly.</p>
+            <button class="ui-button" id="btn-1-create">Create an AWS Account</button>
+            <button class="ui-button secondary" style="margin-left:8px;">Sign in to existing</button>
+          </div>
+          <div class="cursor" id="cursor-1">
+            <svg viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="1">
+              <path d="M5.5 3.21L20.5 12.21L13.5 13.21L9.5 21.21L5.5 3.21Z"/>
+            </svg>
+          </div>
+          <button class="replay-btn" onclick="playStep(1)">↻ Replay</button>
+        </div>
+
+        <!-- Content -->
+        <div class="step-content">
+          <h3>What you're doing</h3>
+          <ul class="step-bullets">
+            <li>Open a new browser tab. Go to <code>aws.amazon.com</code></li>
+            <li>Look for the <strong>orange "Create an AWS Account"</strong> button. It's the big one.</li>
+            <li>You'll be taken to a multi-step signup form. We'll walk through every step.</li>
+            <li>Don't use a "throwaway" account — this is the AWS profile you'll use throughout your career. Use your real name and a real email.</li>
+          </ul>
+          <div class="callout tip">
+            <strong>💡 Tip:</strong> Use an email you'll have for years (not your school address that expires). I recommend a personal Gmail like <code>yourname.aws@gmail.com</code>.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ STEP 2 ═══════════════════ -->
+    <section class="step" id="step-2" data-step="2">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div class="step-title">
+          <h2>Enter your details</h2>
+          <div class="subtitle">Email, password, account name</div>
+        </div>
+      </div>
+
+      <div class="step-body">
+        <div class="browser-mockup" data-anim="step-2">
+          <div class="browser-chrome">
+            <div class="traffic-lights"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+            <div class="browser-url"><span class="lock-icon">🔒</span><span class="url-text">aws.amazon.com/registration</span></div>
+          </div>
+          <div class="browser-content aws-screen">
+            <div class="header">
+              <span class="aws-logo-mark">aws</span>
+              <span>Sign up · Step 1 of 5</span>
+            </div>
+            <h4>Sign up for AWS</h4>
+            <div class="form-group">
+              <label class="ui-label">Root user email address</label>
+              <input class="ui-input" id="input-2-email" placeholder="name@example.com" readonly>
+            </div>
+            <div class="form-group">
+              <label class="ui-label">AWS account name</label>
+              <input class="ui-input" id="input-2-name" placeholder="My Personal Account" readonly>
+            </div>
+            <button class="ui-button" id="btn-2-verify">Verify email address</button>
+          </div>
+          <div class="cursor" id="cursor-2">
+            <svg viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="1">
+              <path d="M5.5 3.21L20.5 12.21L13.5 13.21L9.5 21.21L5.5 3.21Z"/>
+            </svg>
+          </div>
+          <button class="replay-btn" onclick="playStep(2)">↻ Replay</button>
+        </div>
+
+        <div class="step-content">
+          <h3>What goes where</h3>
+          <ul class="step-bullets">
+            <li><strong>Email address:</strong> the one you'll log in with. Triple-check the spelling — this is forever.</li>
+            <li><strong>AWS account name:</strong> just a label. Something like <code>shadrack-personal</code> or <code>my-aws-account</code>.</li>
+            <li>Click <strong>Verify email address</strong>. AWS sends a 6-digit code to your inbox. Paste it back into the form.</li>
+            <li>Choose a strong password. <strong>Save it in a password manager</strong> — losing this is a nightmare to recover.</li>
+          </ul>
+          <div class="callout warn">
+            <strong>⚠️ Important:</strong> This becomes your <strong>root account</strong>. You'll create a regular user later for daily work. The root account is for emergencies only — like the master key to a house.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ STEP 3 ═══════════════════ -->
+    <section class="step" id="step-3" data-step="3">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-title">
+          <h2>Add a payment method</h2>
+          <div class="subtitle">Credit/debit card (West Africa tips!)</div>
+        </div>
+      </div>
+
+      <div class="step-body">
+        <div class="browser-mockup" data-anim="step-3">
+          <div class="browser-chrome">
+            <div class="traffic-lights"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+            <div class="browser-url"><span class="lock-icon">🔒</span><span class="url-text">aws.amazon.com/billing</span></div>
+          </div>
+          <div class="browser-content aws-screen">
+            <div class="header">
+              <span class="aws-logo-mark">aws</span>
+              <span>Sign up · Step 3 of 5</span>
+            </div>
+            <h4>Billing information</h4>
+            <p style="font-size:12px;color:#6B7280;margin-bottom:12px;">A valid card is required to verify your identity. You won't be charged unless you exceed the free tier.</p>
+            <div class="form-group">
+              <label class="ui-label">Card number</label>
+              <input class="ui-input" id="input-3-card" placeholder="4xxx xxxx xxxx xxxx" readonly>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <div class="form-group" style="flex:1;">
+                <label class="ui-label">Expiry</label>
+                <input class="ui-input" placeholder="MM/YY" readonly>
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label class="ui-label">CVV</label>
+                <input class="ui-input" placeholder="•••" readonly>
+              </div>
+            </div>
+            <button class="ui-button" id="btn-3-verify">Verify card</button>
+          </div>
+          <div class="cursor" id="cursor-3">
+            <svg viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="1">
+              <path d="M5.5 3.21L20.5 12.21L13.5 13.21L9.5 21.21L5.5 3.21Z"/>
+            </svg>
+          </div>
+          <button class="replay-btn" onclick="playStep(3)">↻ Replay</button>
+        </div>
+
+        <div class="step-content">
+          <h3>The card situation</h3>
+          <ul class="step-bullets">
+            <li>AWS will charge <strong>$1 USD</strong> (~GHS 15) to verify the card, then refund it within 3-5 days.</li>
+            <li>The card must support <strong>international transactions</strong>. Most local debit cards do NOT — they're domestic-only.</li>
+            <li>Cards that work: <strong>Stanbic Visa Gold, Ecobank Visa, Standard Chartered, GTBank MasterCard, Calbank Visa</strong>.</li>
+            <li>Or use a <strong>Wise/Payoneer/Chipper virtual card</strong> — free to set up, works perfectly.</li>
+          </ul>
+          <div class="callout">
+            <strong>🇬🇭 Ghana-specific:</strong> Telecel Cash and MTN MoMo Mastercards work for some users but fail for others. If yours fails, switch to a Wise virtual card — it's the most reliable workaround.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ STEP 4 ═══════════════════ -->
+    <section class="step" id="step-4" data-step="4">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <div class="step-title">
+          <h2>Enable MFA on root account</h2>
+          <div class="subtitle">The single most important security step</div>
+        </div>
+      </div>
+
+      <div class="step-body">
+        <div class="browser-mockup" data-anim="step-4">
+          <div class="browser-chrome">
+            <div class="traffic-lights"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+            <div class="browser-url"><span class="lock-icon">🔒</span><span class="url-text">console.aws.amazon.com/iam/security-credentials</span></div>
+          </div>
+          <div class="browser-content aws-screen">
+            <div class="header">
+              <span class="aws-logo-mark">aws</span>
+              <span>IAM · Security credentials</span>
+            </div>
+            <h4>Multi-factor authentication (MFA)</h4>
+            <div style="background:#FEF3C7;border:1px solid #F59E0B;border-radius:6px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+              <span style="font-size:20px;">⚠️</span>
+              <span style="font-size:13px;color:#92400E;">MFA is not yet enabled on your root account.</span>
+            </div>
+            <p style="font-size:13px;color:#6B7280;margin-bottom:14px;">Adding MFA significantly improves account security. We strongly recommend it.</p>
+            <button class="ui-button" id="btn-4-mfa">Assign MFA device</button>
+          </div>
+          <div class="cursor" id="cursor-4">
+            <svg viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="1">
+              <path d="M5.5 3.21L20.5 12.21L13.5 13.21L9.5 21.21L5.5 3.21Z"/>
+            </svg>
+          </div>
+          <button class="replay-btn" onclick="playStep(4)">↻ Replay</button>
+        </div>
+
+        <div class="step-content">
+          <h3>Why this matters</h3>
+          <ul class="step-bullets">
+            <li>If someone steals your password, MFA stops them from logging in. Without MFA, they're inside.</li>
+            <li>Use <strong>Google Authenticator</strong> or <strong>Authy</strong> on your phone — both free, both rock solid.</li>
+            <li>In AWS Console: <code>IAM → Security credentials → Assign MFA</code> → scan the QR code with your authenticator app.</li>
+            <li><strong>Back up the QR code's secret key</strong> somewhere safe (password manager). If you lose your phone, you'll need it.</li>
+          </ul>
+          <div class="callout warn">
+            <strong>🚨 Skip MFA at your peril:</strong> Every week, students post horror stories about hacked accounts that ran up $10,000+ in bills from crypto mining. MFA is the single biggest protection. Do it today, not tomorrow.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ STEP 5 ═══════════════════ -->
+    <section class="step" id="step-5" data-step="5">
+      <div class="step-header">
+        <div class="step-number">5</div>
+        <div class="step-title">
+          <h2>Set a billing alarm</h2>
+          <div class="subtitle">So you never get a surprise bill</div>
+        </div>
+      </div>
+
+      <div class="step-body">
+        <div class="browser-mockup" data-anim="step-5">
+          <div class="browser-chrome">
+            <div class="traffic-lights"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+            <div class="browser-url"><span class="lock-icon">🔒</span><span class="url-text">console.aws.amazon.com/billing/budgets</span></div>
+          </div>
+          <div class="browser-content aws-screen">
+            <div class="header">
+              <span class="aws-logo-mark">aws</span>
+              <span>Billing · Budgets</span>
+            </div>
+            <h4>Create budget</h4>
+            <div class="form-group">
+              <label class="ui-label">Budget name</label>
+              <input class="ui-input" id="input-5-name" placeholder="Free tier alarm" readonly>
+            </div>
+            <div class="form-group">
+              <label class="ui-label">Amount (USD)</label>
+              <input class="ui-input" id="input-5-amount" placeholder="$5.00" readonly>
+            </div>
+            <div class="form-group">
+              <label class="ui-label">Alert me when actual costs exceed</label>
+              <input class="ui-input" placeholder="80% of budgeted amount" readonly>
+            </div>
+            <button class="ui-button" id="btn-5-create">Create budget</button>
+          </div>
+          <div class="cursor" id="cursor-5">
+            <svg viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="1">
+              <path d="M5.5 3.21L20.5 12.21L13.5 13.21L9.5 21.21L5.5 3.21Z"/>
+            </svg>
+          </div>
+          <button class="replay-btn" onclick="playStep(5)">↻ Replay</button>
+        </div>
+
+        <div class="step-content">
+          <h3>How to set this up</h3>
+          <ul class="step-bullets">
+            <li>In AWS Console: <code>Billing → Budgets → Create budget</code></li>
+            <li>Pick <strong>"Cost budget"</strong>. Name it <code>Free tier alarm</code>.</li>
+            <li>Amount: <strong>$5 USD</strong>. You should never exceed this if you stay in free tier.</li>
+            <li>Threshold: <strong>80% of budgeted</strong>. Alert email: <strong>your email address</strong>.</li>
+            <li>Now if you ever spend even $4, AWS emails you. No more "I forgot to delete an EC2 instance for 3 weeks" disasters.</li>
+          </ul>
+          <div class="callout tip">
+            <strong>💡 Pro move:</strong> Set TWO alarms — one at $1 (catches early), one at $5 (catches drift). I learned this the hard way. So can you, without paying the tuition.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- Completion -->
+<div class="completion">
+  <div class="ico">🎉</div>
+  <h2>You're set up <span class="accent">on AWS</span></h2>
+  <p>Account created, payment verified, MFA enabled, billing alarm armed. You're ready for Week 1.</p>
+  <div class="completion-actions">
+    <a href="github-setup.html" class="btn btn-primary">Next: GitHub setup →</a>
+    <a href="../index.html" class="btn btn-secondary">← Back to bootcamp</a>
+  </div>
+</div>
+
+<!-- Footer nav -->
+<div class="footer-nav">
+  <a href="../index.html#start">← Back to setup overview</a>
+  <a href="github-setup.html">GitHub setup →</a>
+</div>
+
+</main>
+
+<script>
+  /* ════════════════════════════════════════════════════════════
+     ANIMATION ENGINE
+     ════════════════════════════════════════════════════════════
+     Each step has a "play" sequence: cursor moves to a target,
+     a click ripple fires, the target reacts. Some steps also type
+     into inputs. The IntersectionObserver triggers playStep(N)
+     when the step scrolls into view (only once).
+
+     Replay buttons let students re-watch each animation.
+     prefers-reduced-motion is respected.
+  ════════════════════════════════════════════════════════════ */
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const playedSteps = new Set();
+
+  // ─── Helper: animated cursor click on a target ───
+  function moveCursorTo(stepNum, targetEl, callback) {
+    const cursor = document.getElementById(`cursor-${stepNum}`);
+    if (!cursor || !targetEl) { callback && callback(); return; }
+    const mockup = cursor.parentElement;
+    const cursorRect = mockup.getBoundingClientRect();
+    const targetRect = targetEl.getBoundingClientRect();
+    const left = targetRect.left - cursorRect.left + targetRect.width / 2 - 9;
+    const top  = targetRect.top  - cursorRect.top  + targetRect.height / 2 - 9;
+    cursor.classList.add('active');
+    cursor.style.left = `${left}px`;
+    cursor.style.top  = `${top}px`;
+    setTimeout(() => {
+      // Click ripple
+      const ripple = document.createElement('div');
+      ripple.className = 'click-ripple';
+      ripple.style.left = `${left - 3}px`;
+      ripple.style.top  = `${top - 3}px`;
+      mockup.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+      callback && callback();
+    }, 750);
+  }
+
+  // ─── Helper: type into an input ───
+  function typeInto(input, text, speed, callback) {
+    if (!input) { callback && callback(); return; }
+    input.value = '';
+    input.placeholder = '';
+    input.classList.add('has-text');
+    let i = 0;
+    const interval = setInterval(() => {
+      input.value = text.slice(0, ++i);
+      if (i >= text.length) {
+        clearInterval(interval);
+        callback && callback();
+      }
+    }, speed);
+  }
+
+  // ─── Helper: show success toast inside a mockup ───
+  function showToast(stepEl, message) {
+    const mockup = stepEl.querySelector('.browser-mockup');
+    if (!mockup) return;
+    const existing = mockup.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<span>✓</span><span>${message}</span>`;
+    mockup.appendChild(toast);
+    setTimeout(() => toast.classList.add('visible'), 50);
+    setTimeout(() => {
+      toast.classList.remove('visible');
+      setTimeout(() => toast.remove(), 400);
+    }, 2400);
+  }
+
+  // ─── Step animations ───
+  function playStep(num) {
+    if (reducedMotion) return;
+    const step = document.getElementById(`step-${num}`);
+    if (!step) return;
+
+    if (num === 1) {
+      const btn = document.getElementById('btn-1-create');
+      btn.classList.add('highlighted');
+      setTimeout(() => moveCursorTo(1, btn, () => {
+        btn.style.background = '#E68A00';
+        setTimeout(() => {
+          showToast(step, 'Redirecting to sign up...');
+          btn.classList.remove('highlighted');
+        }, 200);
+      }), 500);
+    }
+
+    else if (num === 2) {
+      const email = document.getElementById('input-2-email');
+      const name  = document.getElementById('input-2-name');
+      const btn   = document.getElementById('btn-2-verify');
+      moveCursorTo(2, email, () => {
+        typeInto(email, 'shadrack.aws@example.com', 50, () => {
+          moveCursorTo(2, name, () => {
+            typeInto(name, 'shadrack-personal', 60, () => {
+              moveCursorTo(2, btn, () => {
+                btn.classList.add('highlighted');
+                showToast(step, 'Verification email sent');
+              });
+            });
+          });
+        });
+      });
+    }
+
+    else if (num === 3) {
+      const card = document.getElementById('input-3-card');
+      const btn  = document.getElementById('btn-3-verify');
+      moveCursorTo(3, card, () => {
+        typeInto(card, '4242 4242 4242 4242', 40, () => {
+          moveCursorTo(3, btn, () => {
+            btn.classList.add('highlighted');
+            setTimeout(() => showToast(step, 'Card verified · $1 hold'), 200);
+          });
+        });
+      });
+    }
+
+    else if (num === 4) {
+      const btn = document.getElementById('btn-4-mfa');
+      moveCursorTo(4, btn, () => {
+        btn.classList.add('highlighted');
+        showToast(step, 'MFA enabled successfully');
+      });
+    }
+
+    else if (num === 5) {
+      const nameInput = document.getElementById('input-5-name');
+      const amount    = document.getElementById('input-5-amount');
+      const btn       = document.getElementById('btn-5-create');
+      moveCursorTo(5, nameInput, () => {
+        typeInto(nameInput, 'Free tier alarm', 50, () => {
+          moveCursorTo(5, amount, () => {
+            typeInto(amount, '$5.00', 80, () => {
+              moveCursorTo(5, btn, () => {
+                btn.classList.add('highlighted');
+                showToast(step, 'Budget created · alerts armed');
+              });
+            });
+          });
+        });
+      });
+    }
+
+    playedSteps.add(num);
+  }
+
+  /* ─── IntersectionObserver: trigger animations on scroll ─── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const stepNum = parseInt(entry.target.dataset.step);
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        if (!playedSteps.has(stepNum)) {
+          setTimeout(() => playStep(stepNum), 600);
+        }
+        updateProgress(stepNum);
+      }
+    });
+  }, { threshold: 0.4 });
+
+  document.querySelectorAll('.step').forEach(step => observer.observe(step));
+
+  /* ─── Progress rail: update fill + active dot ─── */
+  function updateProgress(currentStep) {
+    const total = 5;
+    const fill = document.getElementById('progressFill');
+    fill.style.height = `${((currentStep - 0.5) / total) * 100}%`;
+
+    document.querySelectorAll('.progress-dot').forEach(dot => {
+      const stepNum = parseInt(dot.dataset.step);
+      dot.classList.remove('active', 'completed');
+      if (stepNum < currentStep) dot.classList.add('completed');
+      else if (stepNum === currentStep) dot.classList.add('active');
+    });
+  }
+
+  /* ─── Clicking a progress dot scrolls to that step ─── */
+  document.querySelectorAll('.progress-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      const stepNum = parseInt(dot.dataset.step);
+      const step = document.getElementById(`step-${stepNum}`);
+      if (step) step.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>
