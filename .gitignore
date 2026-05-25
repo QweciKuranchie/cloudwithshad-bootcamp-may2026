@@ -69,6 +69,29 @@ my-solutions/
 .~lock*
 ~$*
 
+# ─────────────────────────────────────────────────────────────
+# AUTHORING TOOLS — not needed by the live site (GitHub Pages
+# only serves the generated HTML + the data/ JSON it fetches).
+# These stay on your machine so you can still rebuild pages,
+# but they don't clutter the public repo.
+# ─────────────────────────────────────────────────────────────
+
+# Build scripts (you run these locally to regenerate pages)
+build-modules.py
+build-recordings.py
+
+# Per-folder source configs (read only by the build scripts;
+# the generated index.html already has everything baked in)
+self-paced/module-*/config.json
+videos/week-*/config.json
+
+# Page templates used by the build scripts
+self-paced/_module_template.html
+self-paced/_coming_soon_template.html
+
+# NOTE: data/jokes.json and data/flashcards.json are NOT ignored —
+# the live jokes & flashcards pages fetch them at runtime. Keep them.
+
 # OS-specific noise
 Icon?
 .Spotlight-V100
