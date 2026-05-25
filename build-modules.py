@@ -5,20 +5,21 @@
 ═══════════════════════════════════════════════════════════════
 
 WHAT THIS DOES
-  Reads self-paced/modules.json and regenerates:
+  Reads each module's own config at self-paced/module-XX/config.json
+  and regenerates:
     1. Every module page (self-paced/module-XX/index.html)
     2. The module grid on the self-paced index page
 
 HOW TO USE
-  1. Edit self-paced/modules.json — set a module's "status" to "live"
-     and fill in title, youtube, pdf, audio, etc.
-  2. Drop the PDF in the module folder, the MP3 in module-XX/audio/
-  3. Run:   python3 build-modules.py
-  4. Commit + push. Done. You never edit the HTML by hand.
+  1. Open the module's folder, e.g. self-paced/module-02/
+  2. Edit its config.json — set "status" to "live" and fill in
+     title, youtube, pdf, audio, etc.
+  3. Drop the PDF in that folder, the MP3 in its audio/ folder
+  4. Run:   python3 build-modules.py
+  5. Commit + push. You never edit the HTML by hand.
 
 SAFE TO RE-RUN
-  Running this repeatedly just regenerates from the JSON. It never
-  loses data because the JSON is the single source of truth.
+  Each module's config.json is its own source of truth.
 ═══════════════════════════════════════════════════════════════
 """
 
@@ -40,10 +41,33 @@ GRID_END_MARKER = "<!-- MODULES_GRID_END -->"
 
 
 def load_config():
-    if not CONFIG.exists():
-        sys.exit(f"❌ Config not found: {CONFIG}")
-    with open(CONFIG, encoding="utf-8") as f:
-        return json.load(f)
+    """Read each module's own config.json from self-paced/module-XX/config.json.
+
+    Falls back to the old central modules.json if no per-folder configs exist,
+    so nothing breaks during migration.
+    """
+    module_configs = sorted(SELF_PACED.glob("module-*/config.json"))
+    if module_configs:
+        modules = []
+        for cfg_path in module_configs:
+            with open(cfg_path, encoding="utf-8") as f:
+                data = json.load(f)
+            # Strip helper keys, keep the actual fields
+            mod = {k: v for k, v in data.items() if not k.startswith("_")}
+            # Derive 'n' from folder name if missing
+            if "n" not in mod:
+                folder_name = cfg_path.parent.name  # module-XX
+                mod["n"] = int(folder_name.split("-")[1])
+            modules.append(mod)
+        modules.sort(key=lambda m: m["n"])
+        return {"modules": modules}
+
+    # Fallback: legacy central file
+    if CONFIG.exists():
+        with open(CONFIG, encoding="utf-8") as f:
+            return json.load(f)
+
+    sys.exit("❌ No module configs found (looked for self-paced/module-*/config.json)")
 
 
 def build_module_page(mod):
@@ -175,7 +199,7 @@ def esc(s):
 def main():
     cfg = load_config()
     modules = cfg["modules"]
-    print(f"📦 Building {len(modules)} self-paced modules from modules.json\n")
+    print(f"📦 Building {len(modules)} self-paced modules from per-folder configs\n")
 
     live_count = 0
     coming_count = 0

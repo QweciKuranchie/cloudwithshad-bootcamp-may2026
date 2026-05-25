@@ -1,0 +1,31 @@
+{
+  "_README": "This week's recording config. The 'sessions' array can hold ANY number of videos — add as many as you upload. Each becomes its own numbered video card. Paste each video's YouTube ID into 'youtube' (the part after watch?v=). Leave 'youtube' blank for a session not uploaded yet. Then run build-recordings.py.",
+  "_fields": {
+    "youtube": "YouTube video ID only (after watch?v=). Blank = not uploaded yet",
+    "title": "Session title",
+    "duration": "e.g. '1h 12m' (optional)",
+    "topics": "Short summary line",
+    "_note": "Add or remove objects in 'sessions' to control how many video cards appear."
+  },
+  "week": 1,
+  "date": "2026-05-23",
+  "dateLabel": "Saturday 23 May 2026",
+  "title": "Cloud Foundations",
+  "subtitle": "S3 · EC2 · IAM basics",
+  "materialsPath": "../../week-01-foundations/",
+  "accent": "cyan",
+  "sessions": [
+    {
+      "title": "Cloud Concepts & S3",
+      "topics": "What the cloud really is, regions & AZs, hands-on S3 + static hosting",
+      "duration": "",
+      "youtube": "WCuLwLHi2h8"
+    },
+    {
+      "title": "EC2 ",
+      "topics": "Launching EC2, SSH, Nginx",
+      "duration": "",
+      "youtube": "aG7lKSC-95M"
+    }
+  ]
+}

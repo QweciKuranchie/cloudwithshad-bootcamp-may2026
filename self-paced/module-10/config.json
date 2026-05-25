@@ -1,0 +1,26 @@
+{
+  "_README": "This is module 10's own config. Edit it, drop your PDF + MP3 in this folder, then from the self-paced/ folder run: python3 ../build-modules.py  (or run build-modules.py from the repo root). To publish: set status to 'live' and fill youtube/pdf/audio.",
+  "_fields": {
+    "status": "'live' or 'coming_soon'",
+    "title": "Module title",
+    "subtitle": "One short theme line",
+    "duration": "e.g. '14 min'",
+    "date": "Publish date, e.g. '6 Jun 2026' (blank if coming soon)",
+    "week": "Which bootcamp week (1-4)",
+    "youtube": "YouTube video ID only (the part after ?v=)",
+    "pdf": "PDF filename in this folder, or blank",
+    "audio": "Audio filename in this folder's audio/ folder, or blank",
+    "description": "Longer paragraph for the About section"
+  },
+  "n": 10,
+  "status": "live",
+  "week": 3,
+  "title": "AWS Cost Management and Billing",
+  "subtitle": "avoiding the big bills",
+  "duration": "9:54",
+  "date": "",
+  "youtube": "R0KKQK5sq2g",
+  "pdf": "",
+  "audio": "",
+  "description": ""
+}

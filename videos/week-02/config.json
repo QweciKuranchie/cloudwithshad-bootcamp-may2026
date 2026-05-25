@@ -1,0 +1,31 @@
+{
+  "_README": "This week's recording config. The 'sessions' array can hold ANY number of videos — add as many as you upload. Each becomes its own numbered video card. Paste each video's YouTube ID into 'youtube' (the part after watch?v=). Leave 'youtube' blank for a session not uploaded yet. Then run build-recordings.py.",
+  "_fields": {
+    "youtube": "YouTube video ID only (after watch?v=). Blank = not uploaded yet",
+    "title": "Session title",
+    "duration": "e.g. '1h 12m' (optional)",
+    "topics": "Short summary line",
+    "_note": "Add or remove objects in 'sessions' to control how many video cards appear."
+  },
+  "week": 2,
+  "date": "2026-05-30",
+  "dateLabel": "Saturday 30 May 2026",
+  "title": "Networking & Databases",
+  "subtitle": "VPC · RDS · Lambda",
+  "materialsPath": "../../week-02-networking/",
+  "accent": "cyan",
+  "sessions": [
+    {
+      "title": "VPC & Networking",
+      "topics": "Building a custom VPC, subnets, route tables, security groups",
+      "duration": "",
+      "youtube": ""
+    },
+    {
+      "title": "RDS & Serverless",
+      "topics": "Managed databases with RDS, plus an event-driven Lambda pipeline",
+      "duration": "",
+      "youtube": ""
+    }
+  ]
+}

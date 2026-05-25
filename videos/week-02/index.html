@@ -3,92 +3,145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Week 2 | cloudwithshad Bootcamp</title>
+<title>Week 2 — Live Recordings | cloudwithshad Bootcamp</title>
+<meta name="description" content="Watch the Week 2 live sessions: Networking &amp; Databases — VPC · RDS · Lambda.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy: #0A1628; --navy-2: #13243A; --cyan: #00B4D8; --gold: #F4B942;
-    --white: #FFFFFF; --gray: #94A3B8;
+    --navy:#0A1628; --navy-2:#13243A; --navy-3:#1A2F4A;
+    --cyan:#00B4D8; --gold:#F4B942; --green:#2EA043;
+    --white:#fff; --gray:#94A3B8; --gray-2:#64748B;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: var(--navy); color: var(--white); min-height: 100vh;
-    line-height: 1.6;
-  }
-  nav.topbar {
-    background: rgba(10,22,40,0.92); backdrop-filter: blur(12px);
-    position: sticky; top: 0; z-index: 100;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-  .nav-inner {
-    max-width: 1200px; margin: 0 auto; padding: 14px 24px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .brand { font-size: 17px; color: var(--white); text-decoration: none; }
-  .brand span { font-weight: 800; color: var(--cyan); }
-  .nav-back { color: var(--gray); text-decoration: none; font-size: 13px; }
-  .nav-back:hover { color: var(--cyan); }
-  main {
-    max-width: 700px; margin: 0 auto;
-    padding: 80px 24px; text-align: center;
-  }
-  .week-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 180px; font-weight: 800; line-height: 1;
-    color: rgba(0,180,216,0.18); margin-bottom: 4px;
-  }
-  @media (max-width: 720px) { .week-num { font-size: 120px; } }
-  .lock { font-size: 56px; margin-bottom: 20px; }
-  h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 44px; font-weight: 800; line-height: 1.15;
-    margin-bottom: 14px; color: var(--white);
-  }
-  @media (max-width: 720px) { h1 { font-size: 32px; } }
-  h1 .accent { color: var(--gold); }
-  .sub { font-size: 18px; color: var(--gray); margin: 0 auto 36px; max-width: 520px; }
-  .date-pill {
-    display: inline-block;
-    background: rgba(244,185,66,0.12);
-    border: 1px solid rgba(244,185,66,0.4);
-    color: var(--gold); padding: 8px 20px; border-radius: 22px;
-    font-size: 14px; font-weight: 600; margin-bottom: 36px;
-  }
-  .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 13px 26px; border-radius: 10px;
-    font-size: 14px; font-weight: 700; text-decoration: none;
-    transition: all 0.2s;
-  }
-  .btn-primary { background: var(--cyan); color: var(--navy); }
-  .btn-primary:hover { background: #00C8F0; transform: translateY(-2px); }
-  .btn-secondary {
-    background: transparent; color: var(--white);
-    border: 1px solid rgba(255,255,255,0.18);
-  }
-  .btn-secondary:hover { background: rgba(255,255,255,0.06); border-color: var(--cyan); }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--navy);color:var(--white);line-height:1.65;overflow-x:hidden}
+  html,body{max-width:100vw}
+  nav.topbar{background:rgba(10,22,40,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.06)}
+  .nav-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
+  .brand{font-size:17px;color:var(--white);text-decoration:none}
+  .brand span{font-weight:800;color:var(--cyan)}
+  .nav-back{color:var(--gray);text-decoration:none;font-size:13px}
+  .nav-back:hover{color:var(--cyan)}
+  main{max-width:1000px;margin:0 auto;padding:36px 24px 80px}
+  .breadcrumbs{font-size:12px;color:var(--gray-2);margin-bottom:18px;font-family:'JetBrains Mono',monospace}
+  .breadcrumbs a{color:var(--gray);text-decoration:none}
+  .breadcrumbs a:hover{color:var(--cyan)}
+  .breadcrumbs .sep{margin:0 8px;opacity:.5}
+  h1.video-title{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,44px);font-weight:800;margin-bottom:8px;line-height:1.1}
+  .video-subtitle{font-size:16px;color:var(--gray);margin-bottom:16px}
+  .video-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:34px}
+  .pill{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gray);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:6px 12px;border-radius:100px}
+  .pill.live{color:var(--green);border-color:rgba(46,160,67,.3);background:rgba(46,160,67,.1)}
+
+  .sessions{display:grid;gap:22px;margin-bottom:40px}
+  .sessions-1{grid-template-columns:1fr;max-width:680px}
+  .sessions-2{grid-template-columns:1fr 1fr}
+  .sessions-many{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  @media (max-width:760px){.sessions{grid-template-columns:1fr !important;max-width:100%}}
+  .session-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;min-width:0}
+  .session-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
+  .session-tag{flex-shrink:0;color:var(--navy);font-weight:700;font-size:12px;font-family:'JetBrains Mono',monospace;padding:5px 10px;border-radius:8px;letter-spacing:.5px}
+  .session-titles{flex:1;min-width:0}
+  .session-titles h3{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;line-height:1.2;margin-bottom:4px}
+  .session-topics{font-size:12.5px;color:var(--gray);line-height:1.5}
+  .sess-pill{flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gray);background:rgba(255,255,255,.05);padding:4px 9px;border-radius:8px;white-space:nowrap}
+  .video-aspect{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden}
+  .video-aspect iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .coming-soon-aspect{background:linear-gradient(135deg,var(--navy-2),var(--navy-3));display:flex;align-items:center;justify-content:center;border:1px dashed rgba(255,255,255,.12)}
+  .cs-inner{text-align:center;padding:20px}
+  .cs-icon{font-size:40px;margin-bottom:10px;opacity:.7}
+  .cs-text{font-size:13px;color:var(--gray);line-height:1.5}
+  .sess-yt-btn{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:13px;font-weight:600;color:#FF4444;text-decoration:none}
+  .sess-yt-btn:hover{text-decoration:underline}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:40px}
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:inherit;transition:all .2s}
+  .btn-secondary{background:rgba(255,255,255,.05);color:var(--white);border-color:rgba(255,255,255,.12)}
+  .btn-secondary:hover{border-color:var(--cyan);color:var(--cyan)}
+
+  .about{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:24px;margin-bottom:24px}
+  .about h2{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:12px}
+  .about p{color:#CBD5E1;font-size:14.5px;margin-bottom:10px}
+  .about p:last-child{margin-bottom:0}
+
+  footer{border-top:1px solid rgba(255,255,255,.06);padding:30px 24px;text-align:center;color:var(--gray-2);font-size:13px}
+  footer a{color:var(--cyan);text-decoration:none}
 </style>
 </head>
 <body>
 <nav class="topbar">
   <div class="nav-inner">
     <a href="../../index.html" class="brand">cloud<span>withshad</span></a>
-    <a href="../index.html" class="nav-back">← Recordings</a>
+    <a href="../index.html" class="nav-back">← All recordings</a>
   </div>
 </nav>
 <main>
-  <div class="week-num">02</div>
-  <div class="lock">🔒</div>
-  <h1>Week 2 recording <span class="accent">coming soon.</span></h1>
-  <p class="sub">The Week 2 live session covers VPC fundamentals, RDS, and serverless with Lambda. Recording will appear here within 24 hours after the session.</p>
-  <div class="date-pill">📅 Records Saturday 30 May 2026</div>
+  <div class="breadcrumbs">
+    <a href="../../index.html">Home</a><span class="sep">/</span>
+    <a href="../index.html">Live Recordings</a><span class="sep">/</span>
+    <span>Week 2</span>
+  </div>
+
+  <h1 class="video-title">Week 2 — Networking &amp; Databases</h1>
+  <div class="video-subtitle">Two live sessions · VPC · RDS · Lambda</div>
+  <div class="video-pills">
+    <span class="pill">🔒 Recordings coming soon</span>
+    <span class="pill">📅 Saturday 30 May 2026</span>
+    <span class="pill">🎯 Week 2 of 4</span>
+  </div>
+
+  <div class="sessions sessions-2">
+
+    <div class="session-card">
+      <div class="session-head">
+        <span class="session-tag" style="background: var(--cyan); ">Session 1</span>
+        <div class="session-titles">
+          <h3>VPC &amp; Networking</h3>
+          <div class="session-topics">Building a custom VPC, subnets, route tables, security groups</div>
+        </div>
+        
+      </div>
+      <div class="video-aspect coming-soon-aspect">
+        <div class="cs-inner">
+          <div class="cs-icon">🎬</div>
+          <div class="cs-text">This session hasn't been uploaded yet.<br>Check back after the live class.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="session-card">
+      <div class="session-head">
+        <span class="session-tag" style="background: var(--cyan); ">Session 2</span>
+        <div class="session-titles">
+          <h3>RDS &amp; Serverless</h3>
+          <div class="session-topics">Managed databases with RDS, plus an event-driven Lambda pipeline</div>
+        </div>
+        
+      </div>
+      <div class="video-aspect coming-soon-aspect">
+        <div class="cs-inner">
+          <div class="cs-icon">🎬</div>
+          <div class="cs-text">This session hasn't been uploaded yet.<br>Check back after the live class.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="actions">
-    <a href="../index.html" class="btn btn-primary">← Back to recordings</a>
-    <a href="../../index.html#weeks" class="btn btn-secondary">View this week's content</a>
+    <a href="../../week-02-networking/" class="btn btn-secondary">📂 Week 2 materials</a>
+    <button onclick="navigator.clipboard.writeText(window.location.href);this.textContent='✓ Link copied!';setTimeout(()=>this.textContent='🔗 Share this page',2500)" class="btn btn-secondary">🔗 Share this page</button>
+  </div>
+
+  <div class="about">
+    <h2>About Week 2</h2>
+    <p>This week was delivered as <strong>two live sessions</strong>, recorded live with the cohort — questions and all. Watch them in order; each one builds on the last.</p>
+    <p>Watch these <strong>before</strong> attempting the week's labs — they'll make a lot more sense afterwards.</p>
   </div>
 </main>
+<footer>
+  Built for the <a href="../../index.html">cloudwithshad</a> AWS Bootcamp · 🇬🇭
+</footer>
 </body>
 </html>

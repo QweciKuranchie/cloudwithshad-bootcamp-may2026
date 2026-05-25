@@ -1,0 +1,31 @@
+{
+  "_README": "This week's recording config. The 'sessions' array can hold ANY number of videos — add as many as you upload. Each becomes its own numbered video card. Paste each video's YouTube ID into 'youtube' (the part after watch?v=). Leave 'youtube' blank for a session not uploaded yet. Then run build-recordings.py.",
+  "_fields": {
+    "youtube": "YouTube video ID only (after watch?v=). Blank = not uploaded yet",
+    "title": "Session title",
+    "duration": "e.g. '1h 12m' (optional)",
+    "topics": "Short summary line",
+    "_note": "Add or remove objects in 'sessions' to control how many video cards appear."
+  },
+  "week": 4,
+  "date": "2026-06-13",
+  "dateLabel": "Saturday 13 June 2026",
+  "title": "AI Capstone",
+  "subtitle": "Textract · Comprehend · Rekognition",
+  "materialsPath": "../../week-04-ai-capstone/",
+  "accent": "gold",
+  "sessions": [
+    {
+      "title": "AWS AI Services Tour",
+      "topics": "Textract, Comprehend, Rekognition — what they do and when to use them",
+      "duration": "",
+      "youtube": ""
+    },
+    {
+      "title": "Building the Capstone",
+      "topics": "Wiring the AI services into a real document-analysis pipeline",
+      "duration": "",
+      "youtube": ""
+    }
+  ]
+}

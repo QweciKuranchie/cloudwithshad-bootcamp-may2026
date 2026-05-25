@@ -1,0 +1,31 @@
+{
+  "_README": "This week's recording config. The 'sessions' array can hold ANY number of videos — add as many as you upload. Each becomes its own numbered video card. Paste each video's YouTube ID into 'youtube' (the part after watch?v=). Leave 'youtube' blank for a session not uploaded yet. Then run build-recordings.py.",
+  "_fields": {
+    "youtube": "YouTube video ID only (after watch?v=). Blank = not uploaded yet",
+    "title": "Session title",
+    "duration": "e.g. '1h 12m' (optional)",
+    "topics": "Short summary line",
+    "_note": "Add or remove objects in 'sessions' to control how many video cards appear."
+  },
+  "week": 3,
+  "date": "2026-06-06",
+  "dateLabel": "Saturday 6 June 2026",
+  "title": "Scaling & DevOps",
+  "subtitle": "Auto Scaling · ALB · CI/CD",
+  "materialsPath": "../../week-03-scaling-devops/",
+  "accent": "cyan",
+  "sessions": [
+    {
+      "title": "Load Balancing & Auto Scaling",
+      "topics": "ALB, target groups, Auto Scaling Groups, scaling under live load",
+      "duration": "",
+      "youtube": ""
+    },
+    {
+      "title": "CI/CD Pipelines",
+      "topics": "From git push to live deploy — building an automated pipeline on AWS",
+      "duration": "",
+      "youtube": ""
+    }
+  ]
+}
