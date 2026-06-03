@@ -485,25 +485,91 @@ echo "&lt;h1&gt;cloudwithshad · two-tier app running&lt;/h1&gt;" &gt; /usr/shar
       </div>
       <p>Now the fun part. Navigate to <strong>RDS → Databases → Create database</strong>.</p>
 
+      <div class="callout warn">
+        <span class="label">⚠️ Cost warning — read before clicking anything</span>
+        <p>The RDS console's <em>defaults</em> are <strong>not</strong> free tier. If you just click through, the estimate at the bottom of the page will show somewhere around <strong>$900+/month</strong>. The defaults assume a production database: Multi-AZ cluster, db.m7g.large, 100 GB Provisioned IOPS storage, Secrets Manager, Performance Insights, Enhanced Monitoring — all switched on, all paid.</p>
+        <p>Follow the table below <strong>exactly</strong> and keep an eye on the <em>"Estimated monthly costs"</em> box at the bottom of the page as you fill it in. With the right settings, that estimate should drop to roughly <strong>$0–$15/month</strong> (and $0 if you're still inside the 12-month AWS free tier).</p>
+      </div>
+
+      <p>Fill in the form section-by-section. The console is long — work top to bottom.</p>
+
+      <h4 style="color: var(--navy); margin: 20px 0 8px;">Engine options</h4>
       <table class="field-table">
         <tr><th>Field</th><th>Value</th></tr>
-        <tr><td>Creation method</td><td>Standard create</td></tr>
-        <tr><td>Engine</td><td>MySQL</td></tr>
-        <tr><td>Version</td><td>Latest 8.0.x</td></tr>
-        <tr><td>Template</td><td><strong>Free tier</strong></td></tr>
-        <tr><td>DB instance identifier</td><td><code>cloudwithshad-db</code></td></tr>
-        <tr><td>Master username</td><td><code>admin</code></td></tr>
-        <tr><td>Master password</td><td>Strong password — save in a password manager</td></tr>
-        <tr><td>Instance class</td><td><code>db.t3.micro</code> (free tier)</td></tr>
-        <tr><td>Storage</td><td>20 GB · gp3 (free tier)</td></tr>
-        <tr><td><strong>Connectivity</strong></td><td><strong>Expand →</strong></td></tr>
-        <tr><td>VPC</td><td><code>cloudwithshad-week2</code></td></tr>
-        <tr><td>Public access</td><td><strong>No</strong> ← critical</td></tr>
-        <tr><td>VPC security group</td><td>Choose existing → <code>db-sg</code></td></tr>
-        <tr><td>Subnet group</td><td>AWS auto-creates one from your private subnets</td></tr>
+        <tr><td>Engine type</td><td><strong>MySQL</strong></td></tr>
+        <tr><td>Creation method</td><td><strong>Full configuration</strong> (gives you all the cost-control switches we need)</td></tr>
+        <tr><td>Engine version</td><td>The default latest (e.g. <code>MySQL 8.4.x</code>) is fine</td></tr>
+        <tr><td>Enable RDS Extended Support</td><td><strong>Leave OFF</strong> ← it's a paid add-on</td></tr>
       </table>
 
-      <p>Hit <strong>Create database</strong>. RDS takes <strong>5-10 minutes</strong> to provision — go make tea.</p>
+      <h4 style="color: var(--navy); margin: 20px 0 8px;">Templates</h4>
+      <table class="field-table">
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Template</td><td><strong>dev/test</strong> ← critical. (Picking Production  expensive defaults.)</td></tr>
+      </table>
+
+      <h4 style="color: var(--navy); margin: 20px 0 8px;">Availability and durability</h4>
+      <table class="field-table">
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Deployment option</td><td><strong>Multi-AZ DB instance deployment (2 instance)</strong> ← critical. The other options<strong> will triple</strong> your bill.</td></tr>
+      </table>
+
+      <h4 style="color: var(--navy); margin: 20px 0 8px;">Settings</h4>
+      <table class="field-table">
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>DB instance identifier</td><td><code>cloudwithshad-db</code></td></tr>
+        <tr><td>Master username</td><td><code>admin</code></td></tr>
+      </table>
+
+      <h4 style="color: var(--navy); margin: 20px 0 8px;">Credentials management</h4>
+      <table class="field-table">
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Manage credentials</td><td><strong>Self managed</strong> ← important. ("Managed in AWS Secrets Manager" is the new default and adds Secrets Manager charges. We'll manage the password ourselves for this lab.)</td></tr>
+        <tr><td>Master password</td><td>Pick a strong password and save it in your password manager. You'll need it in Step 7.</td></tr>
+      </table>
+
+      <h4 style="color: var(--navy); margin: 20px 0 8px;">Instance configuration</h4>
+      <table class="field-table">
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>DB instance class filter</td><td><strong>Burstable classes (includes t classes)</strong>. Also tick <strong>"Include previous generation classes"</strong> so <code>db.t3.micro</code> appears.</td></tr>
+        <tr><td>Instance type</td><td><code>db.t3.micro</code> (free tier) or <code>db.t4g.micro</code> (also free tier, ARM-based — slightly cheaper)</td></tr>
+      </table>
+
+      <h4 style="color: var(--navy); margin: 20px 0 8px;">Storage</h4>
+      <table class="field-table">
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Storage type</td><td><strong>General Purpose SSD (gp3)</strong> ← critical. The console now <em>defaults to "Provisioned IOPS SSD (io2)"</em>, which costs around <strong>$700/month</strong> on its own. Switch it.</td></tr>
+        <tr><td>Allocated storage</td><td><code>20</code> GiB (free tier covers up to 20 GB)</td></tr>
+        <tr><td>Storage autoscaling</td><td>Leave OFF (or set max to 25 GB) so it can't grow your bill without you noticing</td></tr>
+      </table>
+
+      <h4 style="color: var(--navy); margin: 20px 0 8px;">Connectivity</h4>
+      <table class="field-table">
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Compute resource</td><td><strong>Don't connect to an EC2 compute resource</strong>. (The "Connect to EC2" option auto-tweaks security groups for you, but we already set ours up manually in Step 4 — and doing it manually is the point.)</td></tr>
+        <tr><td>Virtual private cloud (VPC)</td><td><code>cloudwithshad-week2</code> ← <strong>NOT</strong> the Default VPC. If yours isn't listed, your subnet group wasn't created — go back to Step 2.</td></tr>
+        <tr><td>DB subnet group</td><td>Choose the one whose name matches your VPC (auto-created by the "VPC and more" wizard). It should list 2 private subnets across 2 AZs.</td></tr>
+        <tr><td>Public access</td><td><strong>No</strong> ← critical. This is the whole point of putting the DB in a private subnet.</td></tr>
+        <tr><td>VPC security group</td><td>Choose existing → remove <code>default</code>, add <code>db-sg</code></td></tr>
+        <tr><td>RDS Proxy</td><td><strong>Leave OFF</strong> (paid add-on; not needed here)</td></tr>
+        <tr><td>Certificate authority</td><td>Leave the default</td></tr>
+      </table>
+
+      <h4 style="color: var(--navy); margin: 20px 0 8px;">Monitoring</h4>
+      <table class="field-table">
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Database Insights</td><td><strong>Standard</strong> (not Advanced — Advanced is a paid tier)</td></tr>
+        <tr><td>Performance Insights</td><td><strong>Uncheck "Enable Performance Insights"</strong>. It often defaults to ON and bills separately after the free retention period.</td></tr>
+        <tr><td>Enhanced Monitoring</td><td><strong>Uncheck "Enable Enhanced Monitoring"</strong> — CloudWatch Logs charges apply once you switch this on.</td></tr>
+        <tr><td>Log exports</td><td>Leave all unchecked for the lab</td></tr>
+      </table>
+
+      <div class="callout exam">
+        <span class="label">Sanity check before you hit Create</span>
+        <p>Scroll to the very bottom of the page. The <strong>"Estimated monthly costs"</strong> box should now show somewhere around <strong>$13–$15/month</strong> (or near $0 if you're inside your 12-month free tier window). If it still says hundreds of dollars, scroll back up — something is set to a paid option. The usual suspects: Storage still on <code>io2</code>, Deployment still on Multi-AZ, or Performance Insights still on.</p>
+      </div>
+
+      <p>Hit <strong>Create database</strong>. RDS takes <strong>5–10 minutes</strong> to provision — go make tea.</p>
 
       <div class="callout warn">
         <span class="label">If you see "DB subnet group missing AZ"</span>
