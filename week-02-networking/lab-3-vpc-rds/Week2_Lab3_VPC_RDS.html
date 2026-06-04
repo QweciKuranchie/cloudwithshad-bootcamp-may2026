@@ -767,11 +767,24 @@ echo "cloudwithshad-db ready · $(date)" &gt; /var/log/cloudwithshad-db.log
       </div>
       <p>This step works the same for both paths — the only difference is the <em>host</em> you connect to.</p>
 
-      <table class="field-table">
-        <tr><th>Path you chose</th><th>Host to use</th><th>Username</th><th>Password</th></tr>
-        <tr><td><strong>Path A — RDS</strong></td><td>The RDS endpoint (e.g. <code>cloudwithshad-db.xxxxx.us-east-1.rds.amazonaws.com</code>)</td><td><code>admin</code></td><td>The master password you set in Step 6</td></tr>
-        <tr><td><strong>Path B — EC2 MySQL</strong></td><td>The DB EC2's <strong>private IPv4 address</strong> (e.g. <code>10.0.x.x</code>)</td><td><code>admin</code></td><td><code>cloudwithshad2026</code> (from the user data script)</td></tr>
-      </table>
+      <div style="display: grid; grid-template-columns: 1fr; gap: 12px; margin: 14px 0;">
+        <div style="border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px 16px; background: rgba(0,180,216,0.05);">
+          <div style="font-weight: 700; color: var(--navy); margin-bottom: 8px;">Path A — RDS</div>
+          <div style="font-size: 13.5px; line-height: 1.7;">
+            <div><strong>Host:</strong> the RDS endpoint (e.g. <code style="word-break: break-all;">cloudwithshad-db.xxxxx.us-east-1.rds.amazonaws.com</code>)</div>
+            <div><strong>Username:</strong> <code>admin</code></div>
+            <div><strong>Password:</strong> the master password you set in Step 6</div>
+          </div>
+        </div>
+        <div style="border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px 16px; background: rgba(244,185,66,0.07);">
+          <div style="font-weight: 700; color: var(--navy); margin-bottom: 8px;">Path B — EC2 MySQL</div>
+          <div style="font-size: 13.5px; line-height: 1.7;">
+            <div><strong>Host:</strong> the DB EC2's <strong>private IPv4 address</strong> (e.g. <code>10.1.x.x</code>)</div>
+            <div><strong>Username:</strong> <code>admin</code></div>
+            <div><strong>Password:</strong> <code>cloudwithshad2026</code> (from the user data script)</div>
+          </div>
+        </div>
+      </div>
 
       <p>SSH into your <strong>web</strong> EC2 from your laptop:</p>
       <div class="code-block">
@@ -811,21 +824,35 @@ echo "cloudwithshad-db ready · $(date)" &gt; /var/log/cloudwithshad-db.log
 
       <div class="callout exam">
         <span class="label">📖 Error decoder — what each common error actually means</span>
-        <table class="field-table" style="margin-top: 6px;">
-          <tr><th>Error</th><th>What it really means</th><th>What to check</th></tr>
-          <tr><td><code>ERROR 2003 ... (110)</code> / <code>(115)</code> / <em>connection times out</em></td><td>Network can't reach the DB at all. SYN packet is being dropped before reply.</td><td>1. Web-sg <strong>outbound</strong> rules — must include port 3306 OR "All traffic" to 0.0.0.0/0 (default). <br>2. db-sg <strong>inbound</strong> rule allows MYSQL/3306 from web-sg. <br>3. Same VPC.</td></tr>
-          <tr><td><code>ERROR 1045 ... Access denied for user</code></td><td>🎉 <strong>Good news</strong> — the network works! You reached the database, just with wrong credentials.</td><td>Re-check username/password. For Path B, default is <code>admin</code> / <code>cloudwithshad2026</code>.</td></tr>
-          <tr><td><code>ERROR 2002 ... Connection refused</code></td><td>You reached the host, but nothing is listening on port 3306.</td><td>For Path B: is the DB EC2 still booting? Wait 2 min after launch. Check <code>systemctl status mariadb</code> on the DB EC2.</td></tr>
-          <tr><td><code>mysql: unknown variable 'ssl-mode=...'</code></td><td>You used MySQL-8 SSL flags but have the MariaDB 10.5 client.</td><td>Drop the SSL flags. Use the plain command above.</td></tr>
-        </table>
+
+        <div style="margin-top: 12px; border-left: 3px solid #ef4444; padding: 10px 14px; background: rgba(239,68,68,0.06); border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+          <p style="margin: 0;"><strong>Error:</strong> <code>ERROR 2003 ... (110)</code> / <code>(115)</code> / connection times out</p>
+          <p style="margin: 6px 0 0;"><strong>What it really means:</strong> Network can't reach the DB at all. SYN packet dropped before reply.</p>
+          <p style="margin: 6px 0 0;"><strong>Fix:</strong> (1) web-sg <em>outbound</em> rules must include port 3306 OR "All traffic" to 0.0.0.0/0 (default). (2) db-sg <em>inbound</em> allows MYSQL/3306 from web-sg. (3) Same VPC for both EC2s.</p>
+        </div>
+
+        <div style="border-left: 3px solid #22c55e; padding: 10px 14px; background: rgba(34,197,94,0.06); border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+          <p style="margin: 0;"><strong>Error:</strong> <code>ERROR 1045 ... Access denied for user</code></p>
+          <p style="margin: 6px 0 0;"><strong>What it really means:</strong> 🎉 <strong>Good news</strong> — the network works! You reached the database, just with wrong credentials.</p>
+          <p style="margin: 6px 0 0;"><strong>Fix:</strong> Re-check username/password. For Path B, default is <code>admin</code> / <code>cloudwithshad2026</code>.</p>
+        </div>
+
+        <div style="border-left: 3px solid #f59e0b; padding: 10px 14px; background: rgba(245,158,11,0.06); border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+          <p style="margin: 0;"><strong>Error:</strong> <code>ERROR 2002 ... Connection refused</code></p>
+          <p style="margin: 6px 0 0;"><strong>What it really means:</strong> You reached the host, but nothing is listening on port 3306.</p>
+          <p style="margin: 6px 0 0;"><strong>Fix:</strong> For Path B: is the DB EC2 still booting? Wait 2 min after launch. Check <code>systemctl status mariadb</code> on the DB EC2.</p>
+        </div>
+
+        <div style="border-left: 3px solid #6366f1; padding: 10px 14px; background: rgba(99,102,241,0.06); border-radius: 0 8px 8px 0;">
+          <p style="margin: 0;"><strong>Error:</strong> <code>mysql: unknown variable 'ssl-mode=...'</code></p>
+          <p style="margin: 6px 0 0;"><strong>What it really means:</strong> You used MySQL-8 SSL flags but have the MariaDB 10.5 client.</p>
+          <p style="margin: 6px 0 0;"><strong>Fix:</strong> Drop the SSL flags. Use the plain <code>mysql -h &lt;host&gt; -u admin -p</code> command above.</p>
+        </div>
       </div>
 
       <div class="callout info">
         <span class="label">Want to prove it's NOT public? (Path A only)</span>
         <p>Try connecting to the RDS endpoint from your laptop (not the EC2 instance). It will hang and time out. That's correct behaviour — the database is invisible to the public internet. Only your EC2 can reach it.</p>
-      </div>
-        <span class="label">Want to prove it's NOT public?</span>
-        <p>Try connecting to the RDS endpoint from your <strong>laptop</strong> (not the EC2 instance). It will hang and time out. That's correct behaviour — the database is invisible to the public internet. Only your EC2 can reach it.</p>
       </div>
     </section>
 
