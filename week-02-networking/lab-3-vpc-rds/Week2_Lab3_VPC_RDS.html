@@ -455,10 +455,10 @@ dnf install -y nginx mariadb105
 systemctl start nginx
 systemctl enable nginx
 
-cat > /usr/share/nginx/html/index.html <<'EOF'
-<h1>☁️ cloudwithshad</h1>
-<p>Week 2 · Lab 3</p>
-<p>✅ Two-Tier App Running</p>
+cat &gt; /usr/share/nginx/html/index.html &lt;&lt;'EOF'
+&lt;h1&gt;☁️ cloudwithshad&lt;/h1&gt;
+&lt;p&gt;Week 2 · Lab 3&lt;/p&gt;
+&lt;p&gt;✅ Two-Tier App Running&lt;/p&gt;
 EOF
 </div>
       <p>This script runs once when EC2 boots — installs nginx + mysql client, starts the web server, sets up a placeholder page.</p>
