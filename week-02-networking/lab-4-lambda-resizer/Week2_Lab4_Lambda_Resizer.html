@@ -359,24 +359,46 @@ s3 = boto3.client(<span class="green">'s3'</span>)
       <p>Click <strong>Deploy</strong>.</p>
 
       <div class="callout warn">
-        <span class="label">Pillow isn't in Lambda by default</span>
-        <p>The code uses the <code>Pillow</code> library, but Lambda's Python runtime doesn't include it. You need to attach a <strong>Lambda Layer</strong> that provides Pillow. AWS publishes one publicly. Add it under <strong>Layers → Add a layer → Specify ARN</strong> — search for the public Pillow layer for your region.</p>
+        <span class="label">⚠️ Pillow isn't in Lambda by default</span>
+        <p>The code uses the <code>Pillow</code> library, but Lambda's Python runtime doesn't include it. You'll get <code>No module named 'PIL'</code> the first time you test. The fix: attach a <strong>Lambda Layer</strong> that provides Pillow. AWS doesn't publish one, but the community-maintained <strong>Klayers</strong> project does — and it's free.</p>
+      </div>
+
+      <p><strong>Add the Pillow layer — exact steps:</strong></p>
+      <ol>
+        <li>Scroll down on the function page → find the <strong>Layers</strong> section → click <strong>"Add a layer"</strong></li>
+        <li>Three radio options appear: <em>AWS layers</em>, <em>Custom layers</em>, <em>Specify an ARN</em> → pick <strong>Specify an ARN</strong></li>
+        <li>Paste this ARN (for <strong>us-east-1, Python 3.12</strong>):
+          <div class="code-block" style="margin-top: 8px;">
+arn:aws:lambda:us-east-1:770693421928:layer:Klayers-p312-Pillow:11
+          </div>
+          <p style="font-size: 13px; color: var(--gray-2); margin-top: 6px;">⓵ Verified working as of June 2026 (Pillow 12.2.0). If you get a "version not found" error, the version at the end (<code>:11</code>) has bumped — see the callout below to look up the current one.</p>
+        </li>
+        <li>Click <strong>Verify</strong> — the box on the right should say "Compatible runtimes: python3.12" ✓</li>
+        <li>Click <strong>Add</strong></li>
+      </ol>
+
+      <div class="callout info">
+        <span class="label">💡 Different region or Python version?</span>
+        <p>The ARN above is specific to <strong>us-east-1</strong> and <strong>Python 3.12</strong>. If your function is in another region or runtime, check the canonical list — Klayers publishes the current ARN per region/runtime here:</p>
+        <p style="word-break: break-all;"><code>https://api.klayers.cloud/api/v2/p3.12/layers/latest/us-east-1/Pillow</code></p>
+        <p>Replace <code>us-east-1</code> with your region, or <code>p3.12</code> with <code>p3.11</code> / <code>p3.10</code> as needed. If you get a "version not found" error, the version number at the end of the ARN (<code>:11</code>) has bumped — check the URL above for the latest and update accordingly.</p>
       </div>
 
       <details class="hint-toggle">
-        <summary>Hint: easiest way to get Pillow into Lambda</summary>
+        <summary>Optional: build your own Pillow layer instead</summary>
         <div class="hint-body">
-          <p>Two options:</p>
-          <p><strong>Option A:</strong> Use Klayers' public Pillow ARN. Search "Klayers Pillow Python 3.12" + your region and you'll find the ARN. Paste it in the "Specify ARN" field.</p>
-          <p><strong>Option B:</strong> Create your own layer. Zip a Python package with Pillow inside, upload it. More work, more learning.</p>
-          <p>For this lab, Option A is fine.</p>
+          <p>Klayers is the easy path. If you want the harder, more educational route: download Pillow on a Linux machine, zip it into a <code>python/</code> folder, upload as your own layer. AWS docs walk through this at <em>docs.aws.amazon.com/lambda/latest/dg/python-layers.html</em>. More work, more learning — totally optional for this lab.</p>
         </div>
       </details>
 
-      <div class="callout tip">
-        <span class="label">Don't forget</span>
-        <p>Set the Lambda <strong>timeout</strong> to at least <strong>30 seconds</strong> and <strong>memory to 512 MB</strong> (Configuration → General configuration → Edit). Image resizing can take a few seconds, and the default 3-second timeout will fail.</p>
-      </div>
+      <h4 style="color: var(--navy); margin: 24px 0 10px;">Now configure timeout and memory (don't skip this)</h4>
+      <p>Image resizing takes a few seconds and Lambda's defaults are too tight. You'll see <code>Task timed out after 3.00 seconds</code> in CloudWatch logs if you skip this.</p>
+      <ol>
+        <li>Still on the function page → <strong>Configuration</strong> tab → <strong>General configuration</strong> → <strong>Edit</strong></li>
+        <li><strong>Memory</strong>: set to <strong>512 MB</strong> (Pillow needs the headroom)</li>
+        <li><strong>Timeout</strong>: set to <strong>30 seconds</strong> (gives image processing breathing room)</li>
+        <li><strong>Save</strong></li>
+      </ol>
     </section>
 
     <!-- PHASE 4: TRIGGER -->
@@ -388,18 +410,25 @@ s3 = boto3.client(<span class="green">'s3'</span>)
       <p>Now we connect S3 to Lambda. In the Lambda function page:</p>
 
       <ol>
-        <li>Click <strong>"+ Add trigger"</strong> (in the function overview diagram)</li>
+        <li>Click <strong>"+ Add trigger"</strong> (in the function overview diagram at the top)</li>
         <li>Select <strong>S3</strong> from the dropdown</li>
-        <li>Bucket: your resizer bucket</li>
-        <li>Event types: <strong>All object create events</strong></li>
-        <li>Prefix: <code>uploads/</code> ← critical — limits the trigger to the uploads folder only</li>
-        <li>Tick "I acknowledge that using the same S3 bucket for both input and output is not recommended..." (we handle this in code with the prefix check)</li>
+        <li><strong>Bucket</strong>: your resizer bucket</li>
+        <li><strong>Event types</strong>: <strong>All object create events</strong></li>
+        <li><strong>Prefix</strong>: <code>uploads/</code> ← critical — limits the trigger to the uploads folder only</li>
+        <li><strong>Suffix</strong>: leave empty</li>
+        <li>Tick "<em>I acknowledge that using the same S3 bucket for both input and output is not recommended...</em>" (we handle this in code with the prefix check, so it's safe)</li>
         <li>Click <strong>Add</strong></li>
       </ol>
 
       <div class="callout warn">
+        <span class="label">⚠️ Don't click "Add destination" — different feature!</span>
+        <p>You may see an <strong>"Add destination"</strong> button somewhere on the function page (or after a trigger fails). <strong>Ignore it for this lab.</strong> "Destinations" are for sending the Lambda's invocation <em>result</em> (success or failure) to another service like SQS, SNS, or EventBridge. It is NOT the same as "configure where the output image goes" — that's already handled by our code writing to the <code>thumbs/</code> prefix.</p>
+        <p>If AI tools have told you to create a second S3 bucket as a destination, that's a different (also valid) architecture pattern — but it's not what this lab uses. One bucket with two prefixes works just fine.</p>
+      </div>
+
+      <div class="callout info">
         <span class="label">Why the prefix matters</span>
-        <p>Without the <code>uploads/</code> prefix, the trigger would fire when Lambda writes the thumb back into S3 — which would trigger another resize — infinite loop. The prefix + the early-return in our code both prevent this.</p>
+        <p>Without the <code>uploads/</code> prefix, the trigger would fire when Lambda writes the thumb back into S3 — which would trigger another resize — infinite loop. The prefix + the early-return check in our code (<code>if key.startswith('thumbs/')</code>) both prevent this. Defence in depth.</p>
       </div>
     </section>
 
