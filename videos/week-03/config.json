@@ -18,8 +18,8 @@
     {
       "title": "Load Balancing & Auto Scaling",
       "topics": "ALB, target groups, Auto Scaling Groups, scaling under live load",
-      "duration": "",
-      "youtube": ""
+      "duration": "2:00",
+      "youtube": "2LokPIS1dCY"
     },
     {
       "title": "CI/CD Pipelines",
