@@ -23,9 +23,15 @@
     },
     {
       "title": "RDS & Serverless",
-      "topics": "Managed databases with RDS, plus an event-driven Lambda pipeline - This option for upgraded accounts",
+      "topics": "Managed databases with RDS, plus an event-driven Lambda pipeline - This is option A, you can do this if you have an upgraded account",
       "duration": "56:27",
       "youtube": "eqQobPEKLrQ"
+    },
+    {
+      "title": "EC2 self managed database & Serverless",
+      "topics": "Self Managed databases with EC2, plus an event-driven Lambda pipeline - This is option B, you can do this if you are on the free tier",
+      "duration": "56:27",
+      "youtube": "DNyX6ZEt3PI"
     }
   ]
 }
